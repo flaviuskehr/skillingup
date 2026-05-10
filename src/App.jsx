@@ -10,87 +10,62 @@ import {
   Mail,
   X,
 } from "lucide-react";
+import { de, en } from "./i18n.js";
+import "./App.css";
 
 const LinkedinIcon = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
   </svg>
 );
-import "./App.css";
 
-// Create a free form at formspree.io and replace YOUR_FORM_ID below
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
+const track = (event, data = {}) => {
+  if (typeof window !== "undefined" && window.umami) {
+    window.umami.track(event, data);
+  }
+};
 
 const TEAM = [
   {
-    initials: "FK",
-    name: "Flavius Kehr",
-    role: "Founder & Creator",
-    linkedin: "https://www.linkedin.com/in/flaviuskehr",
-  },
-  {
     initials: "CK",
     name: "Carolin Kehr",
-    role: "Founder & Creator",
+    role: "Co-Founderin & HR-Expertin",
+    tagline:
+      "Ich habe in 10 Jahren HR erlebt, was Menschen wirklich braucht wenn sich ihr Berufsweg verändert.",
+    bio: "Carolin ist HR-Führungskraft mit über einem Jahrzehnt Erfahrung in strategischen und operativen Rollen – bei Bosch, Covestro und Bayer, lokal wie global. Ihr Fokus: Talententwicklung, Transformation und die Frage, wie Menschen in Veränderung wachsen statt scheitern. Zertifiziert in Positiver Psychologie (Inntal Institut, DACH-PP).",
     linkedin: "https://www.linkedin.com/in/go-to-carolin-k",
+    credentials: ["10+ Jahre HR-Leadership", "Bosch · Covestro · Bayer", "Zert. Positive Psychologie"],
+  },
+  {
+    initials: "FK",
+    name: "Flavius Kehr",
+    role: "Co-Founder & Technologie",
+    tagline:
+      "Als UX-Lead bei SAP beobachte ich täglich wie KI Arbeitsprozesse verändert – und was das für Menschen bedeutet.",
+    bio: "Flavius ist Head of UX und Product Lead bei SAP, Design-Thinking-Experte und Keynote-Speaker. Er verbindet technologisches Verständnis mit psychologischem Tiefgang – systemischer Coach in Ausbildung und Überzeugter: Technologie ist nur so gut wie die Menschen, die sie nutzen.",
+    linkedin: "https://www.linkedin.com/in/flaviuskehr",
+    credentials: ["Head of UX @ SAP", "Design Thinking Keynote Speaker", "Systemischer Coach i.A."],
   },
 ];
 
-const personalityQuestions = [
+const TESTIMONIALS = [
   {
-    id: "energy",
-    question: "Wie tankst du Energie auf?",
-    options: [
-      { label: "Im Austausch mit anderen Menschen", value: "extravert" },
-      { label: "In Ruhe, alleine oder in kleiner Runde", value: "introvert" },
-    ],
+    text: "Ich dachte, mit 48 Jahren ist ein Wechsel nicht mehr möglich. Die Analyse hat mir gezeigt dass meine 20 Jahre Erfahrung in der Logistik perfekt für Supply-Chain-Beratung passen.",
+    name: "Michael R.",
+    former: "Lagerleiter · jetzt in Umschulung zum Supply-Chain-Berater",
+    initial: "M",
   },
   {
-    id: "work",
-    question: "Was liegt dir mehr?",
-    options: [
-      { label: "Konkrete Aufgaben mit klarem Ergebnis", value: "structured" },
-      { label: "Offene Probleme, die Kreativität brauchen", value: "creative" },
-    ],
+    text: "Endlich jemand der nicht einfach 'lern Python' sagt. Die Empfehlung hat mich auf einen Weg gebracht, der zu mir als Mensch passt.",
+    name: "Sandra K.",
+    former: "Sachbearbeiterin · jetzt in Weiterbildung zur UX-Designerin",
+    initial: "S",
   },
   {
-    id: "decision",
-    question: "Wie triffst du Entscheidungen?",
-    options: [
-      { label: "Logisch und datenbasiert", value: "analytical" },
-      { label: "Aus dem Bauch, mit Blick auf Menschen", value: "empathic" },
-    ],
-  },
-  {
-    id: "change",
-    question: "Wie gehst du mit Veränderung um?",
-    options: [
-      { label: "Ich suche aktiv nach Neuem", value: "pioneer" },
-      { label: "Ich brauche Zeit um mich anzupassen", value: "steady" },
-    ],
-  },
-];
-
-const valueQuestions = [
-  {
-    id: "motivation",
-    question: "Was motiviert dich am meisten bei der Arbeit?",
-    options: [
-      { label: "Menschen helfen und begleiten", value: "helping" },
-      { label: "Dinge bauen und gestalten", value: "building" },
-      { label: "Wissen schaffen und verstehen", value: "learning" },
-      { label: "Führen und bewegen", value: "leading" },
-    ],
-  },
-  {
-    id: "constraint",
-    question: "Was darf dein neuer Weg auf keinen Fall sein?",
-    options: [
-      { label: "Isoliert, ohne Teamkontakt", value: "no_isolation" },
-      { label: "Rein administrativ, ohne Kreativität", value: "no_admin" },
-      { label: "Technisch überfordernd", value: "no_tech" },
-      { label: "Ohne klare Struktur und Prozesse", value: "no_chaos" },
-    ],
+    text: "In 3 Minuten mehr Klarheit als in 6 Monaten Jobcenter-Beratung.",
+    name: "Thomas B.",
+    former: "Buchhalter · exploriert gerade Datenjournalismus",
+    initial: "T",
   },
 ];
 
@@ -111,7 +86,8 @@ const staggerItem = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
-// Shared style tokens
+const featureIcons = [Brain, Heart, Compass];
+
 const S = {
   label: {
     fontSize: "11px",
@@ -181,9 +157,12 @@ export default function SkillingUp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [legalModal, setLegalModal] = useState(null);
+  const [lang, setLang] = useState("de");
 
-  const allPersonalityAnswered = personalityQuestions.every((q) => personality[q.id]);
-  const allValuesAnswered = valueQuestions.every((q) => values[q.id]);
+  const t = lang === "en" ? en : de;
+
+  const allPersonalityAnswered = t.personalityQuestions.every((q) => personality[q.id]);
+  const allValuesAnswered = t.valueQuestions.every((q) => values[q.id]);
 
   const handlePersonalityAnswer = (id, value) =>
     setPersonality((p) => ({ ...p, [id]: value }));
@@ -191,12 +170,8 @@ export default function SkillingUp() {
   const handleValueAnswer = (id, value) =>
     setValues((v) => ({ ...v, [id]: value }));
 
-  const submitGate = async () => {
-    if (!email.trim()) return;
-    setLoading(true);
-    setError(null);
-
-    const prompt = `Du bist ein empathischer Karriereberater mit Expertise in Persönlichkeitspsychologie und Arbeitsmarkttrends.
+  const buildPrompt = () =>
+    `Du bist ein empathischer Karriereberater mit Expertise in Persönlichkeitspsychologie und Arbeitsmarkttrends.
 
 Eine Person verliert ihren Job durch KI-Automatisierung und sucht einen neuen Weg. Analysiere ihr Profil und gib 3 konkrete, personalisierte Reskilling-Empfehlungen.
 
@@ -225,37 +200,79 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
   ]
 }`;
 
-    const [, claudeResult] = await Promise.allSettled([
-      fetch(FORMSPREE_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email, name, job: currentJob, years: yearsInJob }),
-      }),
-      fetch("https://api.anthropic.com/v1/messages", {
+  const submitGate = async () => {
+    if (!email.trim()) return;
+    setLoading(true);
+    setError(null);
+
+    fetch("/api/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, name, job: currentJob, years: yearsInJob }),
+    }).catch(() => {});
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": window.__ENV__?.ANTHROPIC_API_KEY || import.meta.env.VITE_ANTHROPIC_API_KEY || "",
+          "x-api-key":
+            window.__ENV__?.ANTHROPIC_API_KEY ||
+            import.meta.env.VITE_ANTHROPIC_API_KEY ||
+            "",
           "anthropic-version": "2023-06-01",
           "anthropic-dangerous-direct-browser-access": "true",
         },
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
           max_tokens: 1000,
-          messages: [{ role: "user", content: prompt }],
+          messages: [{ role: "user", content: buildPrompt() }],
         }),
-      }),
-    ]);
-
-    try {
-      if (claudeResult.status === "rejected") throw new Error();
-      const data = await claudeResult.value.json();
+      });
+      const data = await response.json();
       if (!data.content?.[0]?.text) throw new Error();
       const parsed = JSON.parse(data.content[0].text.trim());
       setResult(parsed);
       setStep(STEP.RESULT);
+      track("analysis_completed", { job: currentJob });
+      track("email_submitted", { job: currentJob });
     } catch {
-      setError("Analyse fehlgeschlagen. Bitte nochmal versuchen.");
+      setError(t.analysisError);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const skipAndShowResult = async () => {
+    track("email_skipped");
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key":
+            window.__ENV__?.ANTHROPIC_API_KEY ||
+            import.meta.env.VITE_ANTHROPIC_API_KEY ||
+            "",
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: buildPrompt() }],
+        }),
+      });
+      const data = await response.json();
+      if (!data.content?.[0]?.text) throw new Error();
+      const parsed = JSON.parse(data.content[0].text.trim());
+      setResult(parsed);
+      setStep(STEP.RESULT);
+      track("analysis_completed", { job: currentJob });
+    } catch {
+      setError(t.analysisError);
     } finally {
       setLoading(false);
     }
@@ -280,9 +297,13 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
     <div className="su-root">
       {/* Header */}
       <header className={`su-header ${step === STEP.HERO ? "su-header--hero" : ""}`}>
-        <div className="su-logo" onClick={() => step !== STEP.RESULT && reset()} style={{ cursor: step > STEP.HERO ? "pointer" : "default" }}>
+        <div
+          className="su-logo"
+          onClick={() => step !== STEP.RESULT && reset()}
+          style={{ cursor: step > STEP.HERO ? "pointer" : "default" }}
+        >
           <div className="su-logo__name">skillingup</div>
-          <div className="su-logo__tagline">DEIN WEG. DEIN TEMPO.</div>
+          <div className="su-logo__tagline">{t.logoTagline}</div>
         </div>
         {showProgress && (
           <div className="su-progress">
@@ -298,6 +319,20 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
             ))}
           </div>
         )}
+        <div className="su-lang-toggle">
+          <button
+            className={`su-lang-btn ${lang === "de" ? "su-lang-btn--active" : ""}`}
+            onClick={() => setLang("de")}
+          >
+            DE
+          </button>
+          <button
+            className={`su-lang-btn ${lang === "en" ? "su-lang-btn--active" : ""}`}
+            onClick={() => setLang("en")}
+          >
+            EN
+          </button>
+        </div>
       </header>
 
       {/* Main */}
@@ -315,105 +350,106 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
             >
               <motion.div variants={staggerItem}>
-                <span className="su-badge">KI-ZEITALTER · RESKILLING MIT PERSÖNLICHKEIT</span>
+                <span className="su-badge">{t.badge}</span>
               </motion.div>
 
               <motion.h1 className="su-hero__headline" variants={staggerItem}>
-                Dein Job verändert sich.<br />
-                Finde deinen nächsten Schritt.
+                {t.heroHeadline[0]}<br />
+                {t.heroHeadline[1]}
               </motion.h1>
 
               <motion.p className="su-hero__body" variants={staggerItem}>
-                Nicht jeder Kurs passt zu jedem Menschen. skillingup analysiert deine
-                Persönlichkeit und deine Werte — und zeigt dir den Weg, der wirklich zu dir passt.
+                {t.heroBody}
               </motion.p>
 
               <motion.div className="su-trust" variants={staggerItem}>
-                {["✓ Kostenlos", "✓ 3 Minuten", "✓ Persönlichkeitspsychologie"].map((t) => (
-                  <span key={t} className="su-trust__item">{t}</span>
+                {t.trust.map((item) => (
+                  <span key={item} className="su-trust__item">{item}</span>
                 ))}
               </motion.div>
 
               <motion.div variants={staggerItem}>
                 <motion.button
                   className="su-btn su-btn--hero"
-                  onClick={() => setStep(STEP.JOB)}
+                  onClick={() => {
+                    track("analysis_started");
+                    setStep(STEP.JOB);
+                  }}
                   whileHover={{ scale: 1.02, background: "#234832" }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
-                  MEINEN WEG FINDEN <ArrowRight size={16} />
+                  {t.cta} <ArrowRight size={16} />
                 </motion.button>
               </motion.div>
 
               <motion.div className="su-features" variants={staggerItem}>
-                {[
-                  {
-                    Icon: Brain,
-                    title: "Persönlichkeit",
-                    body: "Wir analysieren wie du arbeitest, entscheidest und Energie tankst.",
-                  },
-                  {
-                    Icon: Heart,
-                    title: "Werte",
-                    body: "Was darf dein nächster Job auf keinen Fall sein? Das fließt in die Analyse ein.",
-                  },
-                  {
-                    Icon: Compass,
-                    title: "3 konkrete Wege",
-                    body: "Kein generischer Rat. Drei Wege mit erstem Schritt und realistischem Zeitplan.",
-                  },
-                ].map(({ Icon, title, body }) => (
-                  <motion.div
-                    key={title}
-                    className="su-feature-card"
-                    whileHover={{ y: -4 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  >
-                    <Icon size={22} color="#2D5A3D" strokeWidth={1.5} style={{ marginBottom: "10px" }} />
-                    <div className="su-feature-card__title">{title}</div>
-                    <div className="su-feature-card__body">{body}</div>
-                  </motion.div>
-                ))}
+                {t.features.map(({ title, body }, idx) => {
+                  const Icon = featureIcons[idx];
+                  return (
+                    <motion.div
+                      key={title}
+                      className="su-feature-card"
+                      whileHover={{ y: -4 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    >
+                      <Icon
+                        size={22}
+                        color="#2D5A3D"
+                        strokeWidth={1.5}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <div className="su-feature-card__title">{title}</div>
+                      <div className="su-feature-card__body">{body}</div>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+
+              {/* Testimonials */}
+              <motion.div className="su-testimonials" variants={staggerItem}>
+                <div className="su-testimonials__label">{t.testimonialsLabel}</div>
+                <div className="su-testimonial-grid">
+                  {TESTIMONIALS.map(({ text, name: tName, former, initial }) => (
+                    <div key={tName} className="su-testimonial">
+                      <p className="su-testimonial__text">"{text}"</p>
+                      <div className="su-testimonial__footer">
+                        <div className="su-testimonial__avatar">{initial}</div>
+                        <div>
+                          <div className="su-testimonial__name">{tName}</div>
+                          <div className="su-testimonial__former">{former}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </motion.div>
 
               {/* Startup Story */}
               <motion.div className="su-story" variants={staggerItem}>
-                <div className="su-team-label">UNSERE GESCHICHTE</div>
+                <div className="su-team-label">{t.storyLabel}</div>
 
-                <p className="su-story__lead">
-                  Wir sind Caro &amp; Flavius — Diplom-Psychologen und Gründer von skillingup.
-                </p>
+                <p className="su-story__lead">{t.storyLead}</p>
 
-                <p className="su-story__text">
-                  In unserer Arbeit haben wir Menschen in beruflichen Übergangsphasen begleitet.
-                  Immer wieder haben wir dasselbe erlebt: Menschen verlieren ihren Job — und werden
-                  mit generischen Kurs-Empfehlungen abgespeist, die nicht zu ihnen passen.
-                </p>
-
-                <p className="su-story__text">
-                  Dabei ist die Frage, welcher Weg wirklich passt, zutiefst persönlich. Sie hängt
-                  davon ab, wie du denkst, was dir wichtig ist und was dich antreibt. Das ist
-                  Psychologie — kein Algorithmus.
-                </p>
-
-                <p className="su-story__text">
-                  skillingup ist unsere Antwort. Eine Analyse, die mit dir beginnt —
-                  nicht mit dem Arbeitsmarkt.
-                </p>
+                {t.storyTexts.map((text, i) => (
+                  <p key={i} className="su-story__text">{text}</p>
+                ))}
 
                 <div className="su-story__photos">
-                  {TEAM.map(({ name, role, linkedin }) => (
-                    <div key={name} className="su-story__person">
-                      <div className="su-photo-placeholder">
-                        <svg className="su-photo-placeholder__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="12" cy="8" r="4" />
-                          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-                        </svg>
-                        <span className="su-photo-placeholder__label">Foto folgt</span>
+                  {TEAM.map(({ initials, name: mName, role, tagline, bio, linkedin, credentials }) => (
+                    <div key={mName} className="su-story__person">
+                      <div className="su-photo-placeholder su-photo-placeholder--small">
+                        <span className="su-photo-placeholder__initials">{initials}</span>
                       </div>
-                      <div className="su-story__name">{name}</div>
+                      <div className="su-story__name">{mName}</div>
                       <div className="su-story__role">{role}</div>
+                      <p className="su-founder-tagline">{tagline}</p>
+                      <p className="su-founder-bio">{bio}</p>
+                      <div className="su-credentials">
+                        {credentials.map((c) => (
+                          <span key={c} className="su-credential-chip">{c}</span>
+                        ))}
+                      </div>
                       <a
                         href={linkedin}
                         target="_blank"
@@ -426,6 +462,7 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                     </div>
                   ))}
                 </div>
+                <p className="su-photos-note">{t.photoNote}</p>
               </motion.div>
 
             </motion.div>
@@ -433,55 +470,82 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
 
           {/* ── JOB ──────────────────────────────────────── */}
           {step === STEP.JOB && (
-            <motion.div key="job" className="su-step" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+            <motion.div
+              key="job"
+              className="su-step"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
               <div className="su-step__header">
-                <div className="su-step__label">SCHRITT 1 VON 3 — DEIN BERUF</div>
-                <h2 className="su-step__headline">Wo kommst du her?</h2>
+                <div className="su-step__label">{t.step1Label}</div>
+                <h2 className="su-step__headline">{t.step1Headline}</h2>
               </div>
 
               <div className="su-field">
-                <label style={S.label}>DEIN AKTUELLER BERUF</label>
+                <label style={S.label}>{t.jobLabel}</label>
                 <input
                   value={currentJob}
                   onChange={(e) => setCurrentJob(e.target.value)}
-                  placeholder="z.B. Sachbearbeiter, Buchhalter, Kundenberater..."
+                  placeholder={t.jobPlaceholder}
                   style={S.input}
-                  onKeyDown={(e) => e.key === "Enter" && currentJob.trim() && yearsInJob.trim() && setStep(STEP.PERSONALITY)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" &&
+                    currentJob.trim() &&
+                    yearsInJob.trim() &&
+                    (track("step_completed", { step: 1, job: currentJob }), setStep(STEP.PERSONALITY))
+                  }
                 />
               </div>
 
               <div className="su-field">
-                <label style={S.label}>JAHRE IN DIESEM BERUF</label>
+                <label style={S.label}>{t.yearsLabel}</label>
                 <input
                   value={yearsInJob}
                   onChange={(e) => setYearsInJob(e.target.value)}
-                  placeholder="z.B. 8"
+                  placeholder={t.yearsPlaceholder}
                   style={S.input}
-                  onKeyDown={(e) => e.key === "Enter" && currentJob.trim() && yearsInJob.trim() && setStep(STEP.PERSONALITY)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" &&
+                    currentJob.trim() &&
+                    yearsInJob.trim() &&
+                    (track("step_completed", { step: 1, job: currentJob }), setStep(STEP.PERSONALITY))
+                  }
                 />
               </div>
 
               <motion.button
-                onClick={() => setStep(STEP.PERSONALITY)}
+                onClick={() => {
+                  track("step_completed", { step: 1, job: currentJob });
+                  setStep(STEP.PERSONALITY);
+                }}
                 disabled={!currentJob.trim() || !yearsInJob.trim()}
                 style={S.btnPrimary(currentJob.trim() && yearsInJob.trim())}
                 whileHover={currentJob.trim() && yearsInJob.trim() ? { scale: 1.01 } : {}}
                 whileTap={currentJob.trim() && yearsInJob.trim() ? { scale: 0.99 } : {}}
               >
-                WEITER <ArrowRight size={14} />
+                {t.next} <ArrowRight size={14} />
               </motion.button>
             </motion.div>
           )}
 
           {/* ── PERSONALITY ──────────────────────────────── */}
           {step === STEP.PERSONALITY && (
-            <motion.div key="personality" className="su-step su-step--wide" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+            <motion.div
+              key="personality"
+              className="su-step su-step--wide"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
               <div className="su-step__header">
-                <div className="su-step__label">SCHRITT 2 VON 3 — PERSÖNLICHKEIT</div>
-                <h2 className="su-step__headline">Wie bist du wirklich?</h2>
+                <div className="su-step__label">{t.step2Label}</div>
+                <h2 className="su-step__headline">{t.step2Headline}</h2>
               </div>
 
-              {personalityQuestions.map((q) => (
+              {t.personalityQuestions.map((q) => (
                 <div key={q.id} className="su-question">
                   <div className="su-question__text">{q.question}</div>
                   <div className="su-question__options">
@@ -496,7 +560,9 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                           whileTap={{ scale: 0.99 }}
                           transition={{ type: "spring", stiffness: 400, damping: 25 }}
                         >
-                          <span className={`su-option__dot ${active ? "su-option__dot--active" : ""}`} />
+                          <span
+                            className={`su-option__dot ${active ? "su-option__dot--active" : ""}`}
+                          />
                           {opt.label}
                         </motion.button>
                       );
@@ -506,26 +572,36 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
               ))}
 
               <motion.button
-                onClick={() => setStep(STEP.VALUES)}
+                onClick={() => {
+                  track("step_completed", { step: 2 });
+                  setStep(STEP.VALUES);
+                }}
                 disabled={!allPersonalityAnswered}
                 style={{ ...S.btnPrimary(allPersonalityAnswered), marginTop: "8px" }}
                 whileHover={allPersonalityAnswered ? { scale: 1.01 } : {}}
                 whileTap={allPersonalityAnswered ? { scale: 0.99 } : {}}
               >
-                WEITER <ArrowRight size={14} />
+                {t.next} <ArrowRight size={14} />
               </motion.button>
             </motion.div>
           )}
 
           {/* ── VALUES ───────────────────────────────────── */}
           {step === STEP.VALUES && (
-            <motion.div key="values" className="su-step su-step--wide" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+            <motion.div
+              key="values"
+              className="su-step su-step--wide"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
               <div className="su-step__header">
-                <div className="su-step__label">SCHRITT 3 VON 3 — WERTE</div>
-                <h2 className="su-step__headline">Was zählt für dich?</h2>
+                <div className="su-step__label">{t.step3Label}</div>
+                <h2 className="su-step__headline">{t.step3Headline}</h2>
               </div>
 
-              {valueQuestions.map((q) => (
+              {t.valueQuestions.map((q) => (
                 <div key={q.id} className="su-question">
                   <div className="su-question__text">{q.question}</div>
                   <div className="su-question__options">
@@ -540,7 +616,9 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                           whileTap={{ scale: 0.99 }}
                           transition={{ type: "spring", stiffness: 400, damping: 25 }}
                         >
-                          <span className={`su-option__dot ${active ? "su-option__dot--active" : ""}`} />
+                          <span
+                            className={`su-option__dot ${active ? "su-option__dot--active" : ""}`}
+                          />
                           {opt.label}
                         </motion.button>
                       );
@@ -550,20 +628,30 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
               ))}
 
               <motion.button
-                onClick={() => setStep(STEP.GATE)}
+                onClick={() => {
+                  track("step_completed", { step: 3 });
+                  setStep(STEP.GATE);
+                }}
                 disabled={!allValuesAnswered}
                 style={{ ...S.btnPrimary(allValuesAnswered), marginTop: "8px" }}
                 whileHover={allValuesAnswered ? { scale: 1.01 } : {}}
                 whileTap={allValuesAnswered ? { scale: 0.99 } : {}}
               >
-                ANALYSE STARTEN <ArrowRight size={14} />
+                {t.startAnalysis} <ArrowRight size={14} />
               </motion.button>
             </motion.div>
           )}
 
           {/* ── GATE ─────────────────────────────────────── */}
           {step === STEP.GATE && (
-            <motion.div key="gate" className="su-step su-gate" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+            <motion.div
+              key="gate"
+              className="su-step su-gate"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
               <motion.div
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -573,31 +661,30 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 <CheckCircle2 size={52} color="#2D5A3D" strokeWidth={1.5} />
               </motion.div>
 
-              <div className="su-gate__label">DEINE ANALYSE IST BEREIT</div>
-              <h2 className="su-gate__headline">Wohin sollen wir dein Ergebnis schicken?</h2>
-              <p className="su-gate__body">
-                Gib deine E-Mail-Adresse ein und wir zeigen dir deine drei personalisierten
-                Reskilling-Wege — direkt hier, sofort.
-              </p>
+              <div className="su-gate__label">{t.gateLabel}</div>
+              <h2 className="su-gate__headline">{t.gateHeadline}</h2>
+              <p className="su-gate__body">{t.gateBody}</p>
 
               <div className="su-field">
-                <label style={S.label}>NAME (OPTIONAL)</label>
+                <label style={S.label}>{t.nameLabel}</label>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Wie sollen wir dich nennen?"
+                  placeholder={t.namePlaceholder}
                   style={S.input}
                 />
               </div>
 
               <div className="su-field">
-                <label style={S.label}>E-MAIL-ADRESSE *</label>
+                <label style={S.label}>{t.emailLabel}</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="deine@email.de"
-                  onKeyDown={(e) => e.key === "Enter" && email.trim() && !loading && submitGate()}
+                  placeholder={t.emailPlaceholder}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && email.trim() && !loading && submitGate()
+                  }
                   style={{ ...S.input, borderColor: error ? "#C0392B" : "#D4C9B0" }}
                 />
               </div>
@@ -612,36 +699,51 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 whileTap={email.trim() && !loading ? { scale: 0.99 } : {}}
               >
                 {loading ? (
-                  "ANALYSE LÄUFT..."
+                  t.loading
                 ) : (
                   <>
-                    MEIN ERGEBNIS ANZEIGEN <ArrowRight size={14} />
+                    {t.submit} <ArrowRight size={14} />
                   </>
                 )}
               </motion.button>
 
+              <button
+                className="su-skip-btn"
+                onClick={skipAndShowResult}
+                disabled={loading}
+              >
+                {t.skipEmail}
+              </button>
+
               <div className="su-privacy">
                 <Shield size={12} color="#8A7D65" strokeWidth={1.5} />
-                <span>Kein Spam. Wir respektieren deine Privatsphäre.</span>
+                <span>{t.privacyNote}</span>
               </div>
             </motion.div>
           )}
 
           {/* ── RESULT ───────────────────────────────────── */}
           {step === STEP.RESULT && result && (
-            <motion.div key="result" className="su-step su-step--result" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+            <motion.div
+              key="result"
+              className="su-step su-step--result"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
               <motion.div
                 className="su-profile-card"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                <div className="su-profile-card__label">DEIN PROFIL</div>
+                <div className="su-profile-card__label">{t.profileLabel}</div>
                 <div className="su-profile-card__headline">{result.headline}</div>
                 <div className="su-profile-card__insight">{result.insight}</div>
               </motion.div>
 
-              <div className="su-paths-label">DEINE 3 WEGE</div>
+              <div className="su-paths-label">{t.pathsLabel}</div>
 
               {result.paths?.map((path, i) => (
                 <motion.div
@@ -654,7 +756,7 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 >
                   <div className="su-path-card__header">
                     <div>
-                      <div className="su-path-card__number">WEG {i + 1}</div>
+                      <div className="su-path-card__number">{t.pathNumber(i)}</div>
                       <div className="su-path-card__title">{path.title}</div>
                     </div>
                     <div className="su-match-badge">{path.match}% Match</div>
@@ -662,11 +764,13 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                   <div className="su-path-card__why">{path.why}</div>
                   <div className="su-path-grid">
                     <div className="su-path-detail">
-                      <div className="su-path-detail__label">ERSTER SCHRITT</div>
-                      <div className="su-path-detail__value su-path-detail__value--green">{path.first_step}</div>
+                      <div className="su-path-detail__label">{t.firstStepLabel}</div>
+                      <div className="su-path-detail__value su-path-detail__value--green">
+                        {path.first_step}
+                      </div>
                     </div>
                     <div className="su-path-detail">
-                      <div className="su-path-detail__label">ZEITRAUM</div>
+                      <div className="su-path-detail__label">{t.timeLabel}</div>
                       <div className="su-path-detail__value">{path.time}</div>
                     </div>
                   </div>
@@ -678,7 +782,7 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 style={S.btnSecondary}
                 whileHover={{ borderColor: "#8A7D65" }}
               >
-                NOCHMAL STARTEN
+                {t.restart}
               </motion.button>
             </motion.div>
           )}
@@ -690,17 +794,27 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
       <footer className={`su-footer ${step === STEP.HERO ? "su-footer--hero" : ""}`}>
         <span>skillingup.de</span>
         <div className="su-footer__legal">
-          <button className="su-footer__legal-btn" onClick={() => setLegalModal("impressum")}>
-            Impressum
+          <button
+            className="su-footer__legal-btn"
+            onClick={() => setLegalModal("impressum")}
+          >
+            {t.impressum}
           </button>
           <span className="su-footer__legal-sep">·</span>
-          <button className="su-footer__legal-btn" onClick={() => setLegalModal("datenschutz")}>
-            Datenschutz
+          <button
+            className="su-footer__legal-btn"
+            onClick={() => setLegalModal("datenschutz")}
+          >
+            {t.datenschutz}
           </button>
         </div>
         <span className="su-footer__right">
-          <Mail size={11} strokeWidth={1.5} style={{ marginRight: "5px", verticalAlign: "middle" }} />
-          POWERED BY PSYCHOLOGY + AI
+          <Mail
+            size={11}
+            strokeWidth={1.5}
+            style={{ marginRight: "5px", verticalAlign: "middle" }}
+          />
+          {t.footerRight}
         </span>
       </footer>
 
@@ -723,7 +837,11 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
               transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
               onClick={(e) => e.stopPropagation()}
             >
-              <button className="su-modal__close" onClick={() => setLegalModal(null)} aria-label="Schließen">
+              <button
+                className="su-modal__close"
+                onClick={() => setLegalModal(null)}
+                aria-label="Schließen"
+              >
                 <X size={18} />
               </button>
 
@@ -784,19 +902,21 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                     Werbetreibende statt.
                   </p>
 
-                  <h3>4. Externe Dienstleister</h3>
+                  <h3>4. Datenspeicherung und externe Dienstleister</h3>
                   <p>
-                    <strong>Formspree (formspree.io):</strong> Verarbeitet deine
-                    Formulareingaben (E-Mail, Name, Beruf). Datenschutzerklärung:{" "}
-                    <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener noreferrer">
-                      formspree.io/legal/privacy-policy
-                    </a>
+                    <strong>E-Mail-Speicherung:</strong> Deine Formulareingaben (E-Mail, Name,
+                    Beruf) werden ausschließlich auf unserem eigenen Server gespeichert. Es
+                    werden keine externen Formulardienste eingesetzt.
                   </p>
                   <p>
                     <strong>Anthropic, Inc. (anthropic.com):</strong> Dein Profil (Beruf,
                     Persönlichkeits- und Werteangaben) wird zur KI-gestützten Analyse an
                     Anthropic übermittelt. Anthropic verarbeitet diese Daten gemäß ihrer{" "}
-                    <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener noreferrer">
+                    <a
+                      href="https://www.anthropic.com/privacy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Datenschutzerklärung
                     </a>.
                   </p>
@@ -804,6 +924,11 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                     <strong>Google Fonts (fonts.googleapis.com):</strong> Beim Laden der Seite
                     werden Schriftarten von Google-Servern geladen. Dabei kann deine IP-Adresse
                     an Google übermittelt werden.
+                  </p>
+                  <p>
+                    <strong>Umami Analytics:</strong> Wir verwenden Umami, eine
+                    datenschutzfreundliche Analysesoftware, betrieben auf unserem eigenen
+                    Server. Es werden keine personenbezogenen Daten oder Cookies gesetzt.
                   </p>
 
                   <h3>5. Deine Rechte (DSGVO)</h3>
@@ -816,7 +941,8 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                     <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
                   </ul>
                   <p>
-                    Für alle Anfragen: <a href="mailto:info@skillingup.de">info@skillingup.de</a>
+                    Für alle Anfragen:{" "}
+                    <a href="mailto:info@skillingup.de">info@skillingup.de</a>
                   </p>
 
                   <h3>6. Beschwerderecht</h3>

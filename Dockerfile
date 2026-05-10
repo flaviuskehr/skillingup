@@ -1,19 +1,18 @@
-# ── Build ─────────────────────────────────────────────────────
+# ── Build ────────────────────────────────────────────
 FROM node:22-alpine AS builder
 WORKDIR /app
-
 COPY package*.json ./
 RUN npm ci
-
 COPY . .
 RUN npm run build
 
-# ── Serve ──────────────────────────────────────────────────────
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY env.js.template /etc/env.js.template
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
-EXPOSE 80
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# ── Runtime ──────────────────────────────────────────
+FROM node:22-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY --from=builder /app/dist ./dist
+COPY server.js .
+RUN mkdir -p /data && echo "[]" > /data/emails.json
+EXPOSE 3000
+CMD ["node", "server.js"]

@@ -452,9 +452,9 @@ input:focus { border-color: #2D5A3D !important; box-shadow: 0 0 0 3px rgba(45, 9
 .su-story__photos {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 32px;
   margin-top: 40px;
-  max-width: 440px;
+  max-width: 680px;
 }
 .su-story__person {
   display: flex;
@@ -646,6 +646,178 @@ input:focus { border-color: #2D5A3D !important; box-shadow: 0 0 0 3px rgba(45, 9
 }
 .su-legal strong { color: #1A1A1A; }
 
+/* ─── Testimonials ──────────────────────────────────────────── */
+.su-testimonials {
+  max-width: 680px;
+  width: 100%;
+  margin-top: 48px;
+  padding-top: 48px;
+  border-top: 1px solid #D4C9B0;
+}
+.su-testimonials__label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #8A7D65;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.su-testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.su-testimonial {
+  background: #FBF8F3;
+  border: 1px solid #E8E0D0;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.su-testimonial__text {
+  font-size: 13px;
+  color: #3A3028;
+  line-height: 1.75;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-style: italic;
+  flex: 1;
+}
+.su-testimonial__footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid #E8E0D0;
+  padding-top: 12px;
+}
+.su-testimonial__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #2D5A3D;
+  color: #FBF8F3;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Inter', system-ui, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.su-testimonial__name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1A1A1A;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.su-testimonial__former {
+  font-size: 11px;
+  color: #8A7D65;
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.4;
+}
+
+/* ─── Founder bios ──────────────────────────────────────────── */
+.su-founder-tagline {
+  font-style: italic;
+  color: #2D5A3D;
+  font-size: 14px;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.su-founder-bio {
+  color: #5A5040;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 12px;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.su-credentials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.su-credential-chip {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #2D5A3D;
+  border: 1px solid #B8D4C0;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.su-photos-note {
+  text-align: center;
+  font-size: 12px;
+  color: #AAA;
+  margin-top: 16px;
+  font-style: italic;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ─── Photo placeholder – small avatar variant ──────────────── */
+.su-photo-placeholder--small {
+  width: 80px;
+  height: 80px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border-style: solid;
+  margin-bottom: 8px;
+  background: linear-gradient(145deg, #2D5A3D 0%, #3d7a55 100%);
+  justify-content: center;
+}
+.su-photo-placeholder__initials {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #F5F0E8;
+  position: relative;
+  z-index: 1;
+}
+.su-photo-placeholder--small::before { display: none; }
+
+/* ─── Lang toggle ───────────────────────────────────────────── */
+.su-lang-toggle {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.su-lang-btn {
+  background: none;
+  border: 1px solid #D4C9B0;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #8A7D65;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Inter', system-ui, sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.su-lang-btn--active {
+  background: #2D5A3D;
+  color: #FBF8F3;
+  border-color: #2D5A3D;
+}
+
+/* ─── Skip button ───────────────────────────────────────────── */
+.su-skip-btn {
+  background: transparent;
+  border: none;
+  color: #AAA;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+  text-decoration: underline;
+  padding: 4px;
+  font-family: 'Inter', system-ui, sans-serif;
+  width: 100%;
+}
+
 /* ─── Mobile ────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .su-header { padding: 16px 20px; }
@@ -686,9 +858,20 @@ input:focus { border-color: #2D5A3D !important; box-shadow: 0 0 0 3px rgba(45, 9
   .su-legal h2 { font-size: 22px; }
 
   .su-step--result { padding: 0; }
+
+  .su-testimonial-grid { grid-template-columns: 1fr; }
+  .su-testimonials { padding-top: 36px; margin-top: 36px; }
+
+  .su-story__photos { grid-template-columns: 1fr; gap: 32px; max-width: 100%; }
+  .su-story__name { font-size: 14px; }
+
+  .su-lang-toggle { gap: 3px; }
+  .su-lang-btn { font-size: 9px; padding: 3px 6px; }
 }
 
 @media (min-width: 641px) and (max-width: 900px) {
   .su-hero__headline { font-size: 42px; }
   .su-features { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .su-testimonial-grid { grid-template-columns: 1fr; gap: 12px; }
+  .su-story__photos { max-width: 100%; }
 }
