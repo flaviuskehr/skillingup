@@ -8,11 +8,33 @@ import {
   Shield,
   ArrowRight,
   Mail,
+  X,
 } from "lucide-react";
+
+const LinkedinIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+  </svg>
+);
 import "./App.css";
 
 // Create a free form at formspree.io and replace YOUR_FORM_ID below
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
+
+const TEAM = [
+  {
+    initials: "FK",
+    name: "Flavius Kehr",
+    role: "Founder & Creator",
+    linkedin: "https://www.linkedin.com/in/flaviuskehr",
+  },
+  {
+    initials: "CK",
+    name: "Carolin Kehr",
+    role: "Founder & Creator",
+    linkedin: "https://www.linkedin.com/in/go-to-carolin-k",
+  },
+];
 
 const personalityQuestions = [
   {
@@ -158,6 +180,7 @@ export default function SkillingUp() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [legalModal, setLegalModal] = useState(null);
 
   const allPersonalityAnswered = personalityQuestions.every((q) => personality[q.id]);
   const allValuesAnswered = valueQuestions.every((q) => values[q.id]);
@@ -353,6 +376,30 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                   </motion.div>
                 ))}
               </motion.div>
+
+              {/* Team */}
+              <motion.div className="su-team-section" variants={staggerItem}>
+                <div className="su-team-label">GEGRÜNDET VON</div>
+                <div className="su-team-grid">
+                  {TEAM.map(({ initials, name, role, linkedin }) => (
+                    <div key={name} className="su-team-card">
+                      <div className="su-avatar">{initials}</div>
+                      <div className="su-team-card__name">{name}</div>
+                      <div className="su-team-card__role">{role}</div>
+                      <a
+                        href={linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="su-linkedin-btn"
+                      >
+                        <LinkedinIcon />
+                        LinkedIn
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+
             </motion.div>
           )}
 
@@ -614,11 +661,148 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
       {/* Footer */}
       <footer className={`su-footer ${step === STEP.HERO ? "su-footer--hero" : ""}`}>
         <span>skillingup.de</span>
+        <div className="su-footer__legal">
+          <button className="su-footer__legal-btn" onClick={() => setLegalModal("impressum")}>
+            Impressum
+          </button>
+          <span className="su-footer__legal-sep">·</span>
+          <button className="su-footer__legal-btn" onClick={() => setLegalModal("datenschutz")}>
+            Datenschutz
+          </button>
+        </div>
         <span className="su-footer__right">
           <Mail size={11} strokeWidth={1.5} style={{ marginRight: "5px", verticalAlign: "middle" }} />
           POWERED BY PSYCHOLOGY + AI
         </span>
       </footer>
+
+      {/* Legal modal */}
+      <AnimatePresence>
+        {legalModal && (
+          <motion.div
+            className="su-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setLegalModal(null)}
+          >
+            <motion.div
+              className="su-modal"
+              initial={{ opacity: 0, y: 32 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 16 }}
+              transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button className="su-modal__close" onClick={() => setLegalModal(null)} aria-label="Schließen">
+                <X size={18} />
+              </button>
+
+              {legalModal === "impressum" && (
+                <div className="su-legal">
+                  <h2>Impressum</h2>
+                  <p><strong>Angaben gemäß § 5 TMG</strong></p>
+                  <p>
+                    Flavius Kehr<br />
+                    Zehntwaldstraße 31<br />
+                    76149 Karlsruhe
+                  </p>
+                  <h3>Kontakt</h3>
+                  <p>E-Mail: <a href="mailto:info@skillingup.de">info@skillingup.de</a></p>
+                  <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
+                  <p>
+                    Flavius Kehr<br />
+                    Zehntwaldstraße 31<br />
+                    76149 Karlsruhe
+                  </p>
+                  <h3>Haftungsausschluss</h3>
+                  <p>
+                    Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die
+                    Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch
+                    keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG
+                    für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen
+                    verantwortlich.
+                  </p>
+                </div>
+              )}
+
+              {legalModal === "datenschutz" && (
+                <div className="su-legal">
+                  <h2>Datenschutzerklärung</h2>
+
+                  <h3>1. Verantwortlicher</h3>
+                  <p>
+                    Flavius Kehr<br />
+                    Zehntwaldstraße 31<br />
+                    76149 Karlsruhe<br />
+                    E-Mail: <a href="mailto:info@skillingup.de">info@skillingup.de</a>
+                  </p>
+
+                  <h3>2. Welche Daten wir erheben</h3>
+                  <p>Bei der Nutzung von skillingup verarbeitest du folgende Daten:</p>
+                  <ul>
+                    <li>E-Mail-Adresse (Pflichtfeld im Ergebnis-Formular)</li>
+                    <li>Vorname (optional)</li>
+                    <li>Aktueller Beruf und Berufserfahrung</li>
+                    <li>Antworten zu Persönlichkeit und Werten aus dem Fragebogen</li>
+                  </ul>
+
+                  <h3>3. Zweck der Verarbeitung</h3>
+                  <p>
+                    Deine Daten werden ausschließlich verwendet, um deine personalisierte
+                    Reskilling-Analyse zu erstellen und dich über die Weiterentwicklung von
+                    skillingup zu informieren. Es findet kein Verkauf oder Weitergabe an
+                    Werbetreibende statt.
+                  </p>
+
+                  <h3>4. Externe Dienstleister</h3>
+                  <p>
+                    <strong>Formspree (formspree.io):</strong> Verarbeitet deine
+                    Formulareingaben (E-Mail, Name, Beruf). Datenschutzerklärung:{" "}
+                    <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener noreferrer">
+                      formspree.io/legal/privacy-policy
+                    </a>
+                  </p>
+                  <p>
+                    <strong>Anthropic, Inc. (anthropic.com):</strong> Dein Profil (Beruf,
+                    Persönlichkeits- und Werteangaben) wird zur KI-gestützten Analyse an
+                    Anthropic übermittelt. Anthropic verarbeitet diese Daten gemäß ihrer{" "}
+                    <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener noreferrer">
+                      Datenschutzerklärung
+                    </a>.
+                  </p>
+                  <p>
+                    <strong>Google Fonts (fonts.googleapis.com):</strong> Beim Laden der Seite
+                    werden Schriftarten von Google-Servern geladen. Dabei kann deine IP-Adresse
+                    an Google übermittelt werden.
+                  </p>
+
+                  <h3>5. Deine Rechte (DSGVO)</h3>
+                  <p>Du hast jederzeit das Recht auf:</p>
+                  <ul>
+                    <li>Auskunft über deine gespeicherten Daten (Art. 15 DSGVO)</li>
+                    <li>Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
+                    <li>Löschung deiner Daten (Art. 17 DSGVO)</li>
+                    <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+                    <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
+                  </ul>
+                  <p>
+                    Für alle Anfragen: <a href="mailto:info@skillingup.de">info@skillingup.de</a>
+                  </p>
+
+                  <h3>6. Beschwerderecht</h3>
+                  <p>
+                    Du hast das Recht, dich bei der zuständigen Aufsichtsbehörde zu beschweren.
+                    In Baden-Württemberg: Landesbeauftragter für den Datenschutz und die
+                    Informationsfreiheit, Lautenschlagerstraße 20, 70173 Stuttgart.
+                  </p>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
