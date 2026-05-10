@@ -1,6 +1,18 @@
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Brain,
+  Heart,
+  Compass,
+  CheckCircle2,
+  Shield,
+  ArrowRight,
+  Mail,
+} from "lucide-react";
+import "./App.css";
 
-const STEPS = ["job", "personality", "values", "result"];
+// Create a free form at formspree.io and replace YOUR_FORM_ID below
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
 
 const personalityQuestions = [
   {
@@ -60,30 +72,104 @@ const valueQuestions = [
   },
 ];
 
+const STEP = { HERO: 0, JOB: 1, PERSONALITY: 2, VALUES: 3, GATE: 4, RESULT: 5 };
+
+const pageVariants = {
+  initial: { opacity: 0, y: 24 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.38, ease: [0.25, 0.46, 0.45, 0.94] } },
+  exit: { opacity: 0, y: -12, transition: { duration: 0.22, ease: "easeIn" } },
+};
+
+const staggerContainer = {
+  animate: { transition: { staggerChildren: 0.08 } },
+};
+
+const staggerItem = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+};
+
+// Shared style tokens
+const S = {
+  label: {
+    fontSize: "11px",
+    letterSpacing: "2.5px",
+    color: "#8A7D65",
+    display: "block",
+    marginBottom: "8px",
+    fontFamily: "'Inter', system-ui, sans-serif",
+    fontWeight: "500",
+  },
+  input: {
+    width: "100%",
+    padding: "14px 18px",
+    fontSize: "15px",
+    fontFamily: "'Inter', system-ui, sans-serif",
+    border: "1.5px solid #D4C9B0",
+    background: "#FBF8F3",
+    color: "#1A1A1A",
+    outline: "none",
+    borderRadius: "6px",
+    boxSizing: "border-box",
+    transition: "border-color 0.2s",
+  },
+  btnPrimary: (active) => ({
+    width: "100%",
+    padding: "16px 24px",
+    background: active ? "#2D5A3D" : "#D4C9B0",
+    color: active ? "#FBF8F3" : "#8A7D65",
+    border: "none",
+    fontSize: "12px",
+    letterSpacing: "2px",
+    cursor: active ? "pointer" : "not-allowed",
+    borderRadius: "6px",
+    fontFamily: "'Inter', system-ui, sans-serif",
+    fontWeight: "600",
+    transition: "all 0.2s",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "8px",
+  }),
+  btnSecondary: {
+    width: "100%",
+    padding: "14px",
+    background: "transparent",
+    color: "#8A7D65",
+    border: "1.5px solid #D4C9B0",
+    fontSize: "11px",
+    letterSpacing: "2px",
+    cursor: "pointer",
+    borderRadius: "6px",
+    fontFamily: "'Inter', system-ui, sans-serif",
+    fontWeight: "500",
+    transition: "all 0.2s",
+  },
+};
+
 export default function SkillingUp() {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(STEP.HERO);
   const [currentJob, setCurrentJob] = useState("");
   const [yearsInJob, setYearsInJob] = useState("");
   const [personality, setPersonality] = useState({});
   const [values, setValues] = useState({});
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handlePersonalityAnswer = (questionId, value) => {
-    setPersonality((prev) => ({ ...prev, [questionId]: value }));
-  };
-
-  const handleValueAnswer = (questionId, value) => {
-    setValues((prev) => ({ ...prev, [questionId]: value }));
-  };
-
-  const allPersonalityAnswered = personalityQuestions.every(
-    (q) => personality[q.id]
-  );
+  const allPersonalityAnswered = personalityQuestions.every((q) => personality[q.id]);
   const allValuesAnswered = valueQuestions.every((q) => values[q.id]);
 
-  const generateResult = async () => {
+  const handlePersonalityAnswer = (id, value) =>
+    setPersonality((p) => ({ ...p, [id]: value }));
+
+  const handleValueAnswer = (id, value) =>
+    setValues((v) => ({ ...v, [id]: value }));
+
+  const submitGate = async () => {
+    if (!email.trim()) return;
     setLoading(true);
     setError(null);
 
@@ -116,23 +202,36 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
   ]
 }`;
 
-    try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const [, claudeResult] = await Promise.allSettled([
+      fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ email, name, job: currentJob, years: yearsInJob }),
+      }),
+      fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": import.meta.env.VITE_ANTHROPIC_API_KEY || "",
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-sonnet-4-6",
           max_tokens: 1000,
           messages: [{ role: "user", content: prompt }],
         }),
-      });
+      }),
+    ]);
 
-      const data = await response.json();
-      const text = data.content[0].text.trim();
-      const parsed = JSON.parse(text);
+    try {
+      if (claudeResult.status === "rejected") throw new Error();
+      const data = await claudeResult.value.json();
+      if (!data.content?.[0]?.text) throw new Error();
+      const parsed = JSON.parse(data.content[0].text.trim());
       setResult(parsed);
-      setStep(3);
-    } catch (err) {
+      setStep(STEP.RESULT);
+    } catch {
       setError("Analyse fehlgeschlagen. Bitte nochmal versuchen.");
     } finally {
       setLoading(false);
@@ -140,412 +239,385 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
   };
 
   const reset = () => {
-    setStep(0);
+    setStep(STEP.HERO);
     setCurrentJob("");
     setYearsInJob("");
     setPersonality({});
     setValues({});
+    setEmail("");
+    setName("");
     setResult(null);
     setError(null);
   };
 
+  const showProgress = step >= STEP.JOB && step <= STEP.VALUES;
+  const progressStep = step - STEP.JOB;
+
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#F5F0E8",
-      fontFamily: "'Georgia', serif",
-      display: "flex",
-      flexDirection: "column",
-    }}>
+    <div className="su-root">
       {/* Header */}
-      <header style={{
-        padding: "24px 40px",
-        borderBottom: "1px solid #D4C9B0",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        background: "#F5F0E8",
-      }}>
-        <div>
-          <div style={{ fontSize: "22px", fontWeight: "700", color: "#1A1A1A", letterSpacing: "-0.5px" }}>
-            skillingup
-          </div>
-          <div style={{ fontSize: "11px", color: "#8A7D65", letterSpacing: "2px", marginTop: "2px" }}>
-            DEIN WEG. DEIN TEMPO.
-          </div>
+      <header className={`su-header ${step === STEP.HERO ? "su-header--hero" : ""}`}>
+        <div className="su-logo" onClick={() => step !== STEP.RESULT && reset()} style={{ cursor: step > STEP.HERO ? "pointer" : "default" }}>
+          <div className="su-logo__name">skillingup</div>
+          <div className="su-logo__tagline">DEIN WEG. DEIN TEMPO.</div>
         </div>
-        {step > 0 && step < 3 && (
-          <div style={{ display: "flex", gap: "8px" }}>
+        {showProgress && (
+          <div className="su-progress">
             {[0, 1, 2].map((i) => (
-              <div key={i} style={{
-                width: "32px",
-                height: "3px",
-                background: i < step ? "#2D5A3D" : i === step ? "#7AB87A" : "#D4C9B0",
-                borderRadius: "2px",
-                transition: "background 0.3s",
-              }} />
+              <div
+                key={i}
+                className="su-progress__bar"
+                style={{
+                  background:
+                    i < progressStep ? "#2D5A3D" : i === progressStep ? "#7AB87A" : "#D4C9B0",
+                }}
+              />
             ))}
           </div>
         )}
       </header>
 
-      <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
+      {/* Main */}
+      <main className={`su-main ${step === STEP.HERO ? "su-main--hero" : ""}`}>
+        <AnimatePresence mode="wait">
 
-        {/* STEP 0: Landing / Job Input */}
-        {step === 0 && (
-          <div style={{ maxWidth: "560px", width: "100%", textAlign: "center" }}>
-            <div style={{
-              fontSize: "13px",
-              letterSpacing: "3px",
-              color: "#8A7D65",
-              marginBottom: "20px",
-              textTransform: "uppercase",
-            }}>
-              Reskilling mit Persönlichkeit
-            </div>
-            <h1 style={{
-              fontSize: "38px",
-              fontWeight: "700",
-              color: "#1A1A1A",
-              lineHeight: "1.2",
-              marginBottom: "16px",
-              letterSpacing: "-1px",
-            }}>
-              Welcher Weg passt<br />wirklich zu dir?
-            </h1>
-            <p style={{
-              fontSize: "16px",
-              color: "#5A5040",
-              lineHeight: "1.7",
-              marginBottom: "40px",
-            }}>
-              Nicht jeder Kurs passt zu jedem Menschen. Wir finden den Weg der zu deiner Persönlichkeit, deinen Stärken und deinen Werten passt.
-            </p>
-
-            <div style={{ textAlign: "left", marginBottom: "20px" }}>
-              <label style={{ fontSize: "12px", letterSpacing: "2px", color: "#8A7D65", display: "block", marginBottom: "8px" }}>
-                DEIN AKTUELLER BERUF
-              </label>
-              <input
-                value={currentJob}
-                onChange={(e) => setCurrentJob(e.target.value)}
-                placeholder="z.B. Sachbearbeiter, Buchhalter, Kundenberater..."
-                style={{
-                  width: "100%",
-                  padding: "14px 18px",
-                  fontSize: "16px",
-                  fontFamily: "'Georgia', serif",
-                  border: "1px solid #D4C9B0",
-                  background: "#FBF8F3",
-                  color: "#1A1A1A",
-                  outline: "none",
-                  borderRadius: "4px",
-                  boxSizing: "border-box",
-                }}
-              />
-            </div>
-
-            <div style={{ textAlign: "left", marginBottom: "36px" }}>
-              <label style={{ fontSize: "12px", letterSpacing: "2px", color: "#8A7D65", display: "block", marginBottom: "8px" }}>
-                JAHRE IN DIESEM BERUF
-              </label>
-              <input
-                value={yearsInJob}
-                onChange={(e) => setYearsInJob(e.target.value)}
-                placeholder="z.B. 8 Jahre"
-                style={{
-                  width: "100%",
-                  padding: "14px 18px",
-                  fontSize: "16px",
-                  fontFamily: "'Georgia', serif",
-                  border: "1px solid #D4C9B0",
-                  background: "#FBF8F3",
-                  color: "#1A1A1A",
-                  outline: "none",
-                  borderRadius: "4px",
-                  boxSizing: "border-box",
-                }}
-              />
-            </div>
-
-            <button
-              onClick={() => setStep(1)}
-              disabled={!currentJob.trim() || !yearsInJob.trim()}
-              style={{
-                width: "100%",
-                padding: "16px",
-                background: currentJob.trim() && yearsInJob.trim() ? "#2D5A3D" : "#D4C9B0",
-                color: currentJob.trim() && yearsInJob.trim() ? "#FBF8F3" : "#8A7D65",
-                border: "none",
-                fontSize: "14px",
-                letterSpacing: "2px",
-                cursor: currentJob.trim() && yearsInJob.trim() ? "pointer" : "not-allowed",
-                borderRadius: "4px",
-                fontFamily: "'Georgia', serif",
-                transition: "all 0.2s",
-              }}
+          {/* ── HERO ─────────────────────────────────────── */}
+          {step === STEP.HERO && (
+            <motion.div
+              key="hero"
+              className="su-hero"
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
             >
-              MEINEN WEG FINDEN →
-            </button>
-          </div>
-        )}
+              <motion.div variants={staggerItem}>
+                <span className="su-badge">KI-ZEITALTER · RESKILLING MIT PERSÖNLICHKEIT</span>
+              </motion.div>
 
-        {/* STEP 1: Personality */}
-        {step === 1 && (
-          <div style={{ maxWidth: "600px", width: "100%" }}>
-            <div style={{ marginBottom: "36px" }}>
-              <div style={{ fontSize: "12px", letterSpacing: "3px", color: "#8A7D65", marginBottom: "10px" }}>
-                SCHRITT 1 VON 2 — PERSÖNLICHKEIT
-              </div>
-              <h2 style={{ fontSize: "28px", fontWeight: "700", color: "#1A1A1A", letterSpacing: "-0.5px", margin: 0 }}>
-                Wie bist du wirklich?
-              </h2>
-            </div>
+              <motion.h1 className="su-hero__headline" variants={staggerItem}>
+                Dein Job verändert sich.<br />
+                Finde deinen nächsten Schritt.
+              </motion.h1>
 
-            {personalityQuestions.map((q) => (
-              <div key={q.id} style={{ marginBottom: "28px" }}>
-                <div style={{ fontSize: "15px", color: "#1A1A1A", marginBottom: "12px", lineHeight: "1.5" }}>
-                  {q.question}
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {q.options.map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => handlePersonalityAnswer(q.id, opt.value)}
-                      style={{
-                        padding: "14px 18px",
-                        textAlign: "left",
-                        background: personality[q.id] === opt.value ? "#2D5A3D" : "#FBF8F3",
-                        color: personality[q.id] === opt.value ? "#F5F0E8" : "#3A3028",
-                        border: `1px solid ${personality[q.id] === opt.value ? "#2D5A3D" : "#D4C9B0"}`,
-                        cursor: "pointer",
-                        fontSize: "14px",
-                        fontFamily: "'Georgia', serif",
-                        borderRadius: "4px",
-                        transition: "all 0.15s",
-                      }}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
+              <motion.p className="su-hero__body" variants={staggerItem}>
+                Nicht jeder Kurs passt zu jedem Menschen. skillingup analysiert deine
+                Persönlichkeit und deine Werte — und zeigt dir den Weg, der wirklich zu dir passt.
+              </motion.p>
 
-            <button
-              onClick={() => setStep(2)}
-              disabled={!allPersonalityAnswered}
-              style={{
-                width: "100%",
-                padding: "16px",
-                background: allPersonalityAnswered ? "#2D5A3D" : "#D4C9B0",
-                color: allPersonalityAnswered ? "#FBF8F3" : "#8A7D65",
-                border: "none",
-                fontSize: "14px",
-                letterSpacing: "2px",
-                cursor: allPersonalityAnswered ? "pointer" : "not-allowed",
-                borderRadius: "4px",
-                fontFamily: "'Georgia', serif",
-                marginTop: "8px",
-              }}
-            >
-              WEITER →
-            </button>
-          </div>
-        )}
+              <motion.div className="su-trust" variants={staggerItem}>
+                {["✓ Kostenlos", "✓ 3 Minuten", "✓ Persönlichkeitspsychologie"].map((t) => (
+                  <span key={t} className="su-trust__item">{t}</span>
+                ))}
+              </motion.div>
 
-        {/* STEP 2: Values */}
-        {step === 2 && (
-          <div style={{ maxWidth: "600px", width: "100%" }}>
-            <div style={{ marginBottom: "36px" }}>
-              <div style={{ fontSize: "12px", letterSpacing: "3px", color: "#8A7D65", marginBottom: "10px" }}>
-                SCHRITT 2 VON 2 — WERTE
-              </div>
-              <h2 style={{ fontSize: "28px", fontWeight: "700", color: "#1A1A1A", letterSpacing: "-0.5px", margin: 0 }}>
-                Was zählt für dich?
-              </h2>
-            </div>
+              <motion.div variants={staggerItem}>
+                <motion.button
+                  className="su-btn su-btn--hero"
+                  onClick={() => setStep(STEP.JOB)}
+                  whileHover={{ scale: 1.02, background: "#234832" }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                >
+                  MEINEN WEG FINDEN <ArrowRight size={16} />
+                </motion.button>
+              </motion.div>
 
-            {valueQuestions.map((q) => (
-              <div key={q.id} style={{ marginBottom: "28px" }}>
-                <div style={{ fontSize: "15px", color: "#1A1A1A", marginBottom: "12px", lineHeight: "1.5" }}>
-                  {q.question}
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {q.options.map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => handleValueAnswer(q.id, opt.value)}
-                      style={{
-                        padding: "14px 18px",
-                        textAlign: "left",
-                        background: values[q.id] === opt.value ? "#2D5A3D" : "#FBF8F3",
-                        color: values[q.id] === opt.value ? "#F5F0E8" : "#3A3028",
-                        border: `1px solid ${values[q.id] === opt.value ? "#2D5A3D" : "#D4C9B0"}`,
-                        cursor: "pointer",
-                        fontSize: "14px",
-                        fontFamily: "'Georgia', serif",
-                        borderRadius: "4px",
-                        transition: "all 0.15s",
-                      }}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
+              <motion.div className="su-features" variants={staggerItem}>
+                {[
+                  {
+                    Icon: Brain,
+                    title: "Persönlichkeit",
+                    body: "Wir analysieren wie du arbeitest, entscheidest und Energie tankst.",
+                  },
+                  {
+                    Icon: Heart,
+                    title: "Werte",
+                    body: "Was darf dein nächster Job auf keinen Fall sein? Das fließt in die Analyse ein.",
+                  },
+                  {
+                    Icon: Compass,
+                    title: "3 konkrete Wege",
+                    body: "Kein generischer Rat. Drei Wege mit erstem Schritt und realistischem Zeitplan.",
+                  },
+                ].map(({ Icon, title, body }) => (
+                  <motion.div
+                    key={title}
+                    className="su-feature-card"
+                    whileHover={{ y: -4 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <Icon size={22} color="#2D5A3D" strokeWidth={1.5} style={{ marginBottom: "10px" }} />
+                    <div className="su-feature-card__title">{title}</div>
+                    <div className="su-feature-card__body">{body}</div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </motion.div>
+          )}
 
-            {error && (
-              <div style={{ color: "#C0392B", fontSize: "13px", marginBottom: "12px", textAlign: "center" }}>
-                {error}
-              </div>
-            )}
-
-            <button
-              onClick={generateResult}
-              disabled={!allValuesAnswered || loading}
-              style={{
-                width: "100%",
-                padding: "16px",
-                background: allValuesAnswered && !loading ? "#2D5A3D" : "#D4C9B0",
-                color: allValuesAnswered && !loading ? "#FBF8F3" : "#8A7D65",
-                border: "none",
-                fontSize: "14px",
-                letterSpacing: "2px",
-                cursor: allValuesAnswered && !loading ? "pointer" : "not-allowed",
-                borderRadius: "4px",
-                fontFamily: "'Georgia', serif",
-                marginTop: "8px",
-              }}
-            >
-              {loading ? "ANALYSE LÄUFT..." : "MEINEN WEG ANALYSIEREN →"}
-            </button>
-          </div>
-        )}
-
-        {/* STEP 3: Results */}
-        {step === 3 && result && (
-          <div style={{ maxWidth: "680px", width: "100%" }}>
-            <div style={{
-              background: "#2D5A3D",
-              color: "#F5F0E8",
-              padding: "32px",
-              borderRadius: "4px",
-              marginBottom: "28px",
-            }}>
-              <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#7AB87A", marginBottom: "12px" }}>
-                DEIN PROFIL
-              </div>
-              <div style={{ fontSize: "22px", fontWeight: "700", lineHeight: "1.3", marginBottom: "16px" }}>
-                {result.headline}
-              </div>
-              <div style={{ fontSize: "14px", lineHeight: "1.7", color: "#C8DFC8", opacity: 0.9 }}>
-                {result.insight}
-              </div>
-            </div>
-
-            <div style={{ marginBottom: "12px" }}>
-              <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#8A7D65", marginBottom: "20px" }}>
-                DEINE 3 WEGE
+          {/* ── JOB ──────────────────────────────────────── */}
+          {step === STEP.JOB && (
+            <motion.div key="job" className="su-step" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <div className="su-step__header">
+                <div className="su-step__label">SCHRITT 1 VON 3 — DEIN BERUF</div>
+                <h2 className="su-step__headline">Wo kommst du her?</h2>
               </div>
 
-              {result.paths?.map((path, i) => (
-                <div key={i} style={{
-                  background: "#FBF8F3",
-                  border: "1px solid #D4C9B0",
-                  borderRadius: "4px",
-                  padding: "24px",
-                  marginBottom: "16px",
-                }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-                    <div>
-                      <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#8A7D65", marginBottom: "4px" }}>
-                        WEG {i + 1}
-                      </div>
-                      <div style={{ fontSize: "20px", fontWeight: "700", color: "#1A1A1A" }}>
-                        {path.title}
-                      </div>
-                    </div>
-                    <div style={{
-                      background: "#2D5A3D",
-                      color: "#F5F0E8",
-                      padding: "6px 14px",
-                      borderRadius: "20px",
-                      fontSize: "13px",
-                      fontWeight: "700",
-                      whiteSpace: "nowrap",
-                    }}>
-                      {path.match}% Match
-                    </div>
-                  </div>
+              <div className="su-field">
+                <label style={S.label}>DEIN AKTUELLER BERUF</label>
+                <input
+                  value={currentJob}
+                  onChange={(e) => setCurrentJob(e.target.value)}
+                  placeholder="z.B. Sachbearbeiter, Buchhalter, Kundenberater..."
+                  style={S.input}
+                  onKeyDown={(e) => e.key === "Enter" && currentJob.trim() && yearsInJob.trim() && setStep(STEP.PERSONALITY)}
+                />
+              </div>
 
-                  <div style={{ fontSize: "14px", color: "#5A5040", lineHeight: "1.6", marginBottom: "16px" }}>
-                    {path.why}
-                  </div>
+              <div className="su-field">
+                <label style={S.label}>JAHRE IN DIESEM BERUF</label>
+                <input
+                  value={yearsInJob}
+                  onChange={(e) => setYearsInJob(e.target.value)}
+                  placeholder="z.B. 8"
+                  style={S.input}
+                  onKeyDown={(e) => e.key === "Enter" && currentJob.trim() && yearsInJob.trim() && setStep(STEP.PERSONALITY)}
+                />
+              </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                    <div style={{
-                      background: "#F5F0E8",
-                      padding: "12px 14px",
-                      borderRadius: "4px",
-                    }}>
-                      <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#8A7D65", marginBottom: "6px" }}>
-                        ERSTER SCHRITT
-                      </div>
-                      <div style={{ fontSize: "13px", color: "#2D5A3D", lineHeight: "1.5" }}>
-                        {path.first_step}
-                      </div>
-                    </div>
-                    <div style={{
-                      background: "#F5F0E8",
-                      padding: "12px 14px",
-                      borderRadius: "4px",
-                    }}>
-                      <div style={{ fontSize: "10px", letterSpacing: "2px", color: "#8A7D65", marginBottom: "6px" }}>
-                        ZEITRAUM
-                      </div>
-                      <div style={{ fontSize: "13px", color: "#1A1A1A", lineHeight: "1.5" }}>
-                        {path.time}
-                      </div>
-                    </div>
+              <motion.button
+                onClick={() => setStep(STEP.PERSONALITY)}
+                disabled={!currentJob.trim() || !yearsInJob.trim()}
+                style={S.btnPrimary(currentJob.trim() && yearsInJob.trim())}
+                whileHover={currentJob.trim() && yearsInJob.trim() ? { scale: 1.01 } : {}}
+                whileTap={currentJob.trim() && yearsInJob.trim() ? { scale: 0.99 } : {}}
+              >
+                WEITER <ArrowRight size={14} />
+              </motion.button>
+            </motion.div>
+          )}
+
+          {/* ── PERSONALITY ──────────────────────────────── */}
+          {step === STEP.PERSONALITY && (
+            <motion.div key="personality" className="su-step su-step--wide" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <div className="su-step__header">
+                <div className="su-step__label">SCHRITT 2 VON 3 — PERSÖNLICHKEIT</div>
+                <h2 className="su-step__headline">Wie bist du wirklich?</h2>
+              </div>
+
+              {personalityQuestions.map((q) => (
+                <div key={q.id} className="su-question">
+                  <div className="su-question__text">{q.question}</div>
+                  <div className="su-question__options">
+                    {q.options.map((opt) => {
+                      const active = personality[q.id] === opt.value;
+                      return (
+                        <motion.button
+                          key={opt.value}
+                          onClick={() => handlePersonalityAnswer(q.id, opt.value)}
+                          className={`su-option ${active ? "su-option--active" : ""}`}
+                          whileHover={!active ? { x: 3 } : {}}
+                          whileTap={{ scale: 0.99 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        >
+                          <span className={`su-option__dot ${active ? "su-option__dot--active" : ""}`} />
+                          {opt.label}
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
-            </div>
 
-            <button
-              onClick={reset}
-              style={{
-                width: "100%",
-                padding: "14px",
-                background: "transparent",
-                color: "#8A7D65",
-                border: "1px solid #D4C9B0",
-                fontSize: "13px",
-                letterSpacing: "2px",
-                cursor: "pointer",
-                borderRadius: "4px",
-                fontFamily: "'Georgia', serif",
-              }}
-            >
-              NOCHMAL STARTEN
-            </button>
-          </div>
-        )}
+              <motion.button
+                onClick={() => setStep(STEP.VALUES)}
+                disabled={!allPersonalityAnswered}
+                style={{ ...S.btnPrimary(allPersonalityAnswered), marginTop: "8px" }}
+                whileHover={allPersonalityAnswered ? { scale: 1.01 } : {}}
+                whileTap={allPersonalityAnswered ? { scale: 0.99 } : {}}
+              >
+                WEITER <ArrowRight size={14} />
+              </motion.button>
+            </motion.div>
+          )}
+
+          {/* ── VALUES ───────────────────────────────────── */}
+          {step === STEP.VALUES && (
+            <motion.div key="values" className="su-step su-step--wide" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <div className="su-step__header">
+                <div className="su-step__label">SCHRITT 3 VON 3 — WERTE</div>
+                <h2 className="su-step__headline">Was zählt für dich?</h2>
+              </div>
+
+              {valueQuestions.map((q) => (
+                <div key={q.id} className="su-question">
+                  <div className="su-question__text">{q.question}</div>
+                  <div className="su-question__options">
+                    {q.options.map((opt) => {
+                      const active = values[q.id] === opt.value;
+                      return (
+                        <motion.button
+                          key={opt.value}
+                          onClick={() => handleValueAnswer(q.id, opt.value)}
+                          className={`su-option ${active ? "su-option--active" : ""}`}
+                          whileHover={!active ? { x: 3 } : {}}
+                          whileTap={{ scale: 0.99 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        >
+                          <span className={`su-option__dot ${active ? "su-option__dot--active" : ""}`} />
+                          {opt.label}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+
+              <motion.button
+                onClick={() => setStep(STEP.GATE)}
+                disabled={!allValuesAnswered}
+                style={{ ...S.btnPrimary(allValuesAnswered), marginTop: "8px" }}
+                whileHover={allValuesAnswered ? { scale: 1.01 } : {}}
+                whileTap={allValuesAnswered ? { scale: 0.99 } : {}}
+              >
+                ANALYSE STARTEN <ArrowRight size={14} />
+              </motion.button>
+            </motion.div>
+          )}
+
+          {/* ── GATE ─────────────────────────────────────── */}
+          {step === STEP.GATE && (
+            <motion.div key="gate" className="su-step su-gate" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.1 }}
+                style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}
+              >
+                <CheckCircle2 size={52} color="#2D5A3D" strokeWidth={1.5} />
+              </motion.div>
+
+              <div className="su-gate__label">DEINE ANALYSE IST BEREIT</div>
+              <h2 className="su-gate__headline">Wohin sollen wir dein Ergebnis schicken?</h2>
+              <p className="su-gate__body">
+                Gib deine E-Mail-Adresse ein und wir zeigen dir deine drei personalisierten
+                Reskilling-Wege — direkt hier, sofort.
+              </p>
+
+              <div className="su-field">
+                <label style={S.label}>NAME (OPTIONAL)</label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Wie sollen wir dich nennen?"
+                  style={S.input}
+                />
+              </div>
+
+              <div className="su-field">
+                <label style={S.label}>E-MAIL-ADRESSE *</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="deine@email.de"
+                  onKeyDown={(e) => e.key === "Enter" && email.trim() && !loading && submitGate()}
+                  style={{ ...S.input, borderColor: error ? "#C0392B" : "#D4C9B0" }}
+                />
+              </div>
+
+              {error && <p className="su-error">{error}</p>}
+
+              <motion.button
+                onClick={submitGate}
+                disabled={!email.trim() || loading}
+                style={S.btnPrimary(email.trim() && !loading)}
+                whileHover={email.trim() && !loading ? { scale: 1.01 } : {}}
+                whileTap={email.trim() && !loading ? { scale: 0.99 } : {}}
+              >
+                {loading ? (
+                  "ANALYSE LÄUFT..."
+                ) : (
+                  <>
+                    MEIN ERGEBNIS ANZEIGEN <ArrowRight size={14} />
+                  </>
+                )}
+              </motion.button>
+
+              <div className="su-privacy">
+                <Shield size={12} color="#8A7D65" strokeWidth={1.5} />
+                <span>Kein Spam. Wir respektieren deine Privatsphäre.</span>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ── RESULT ───────────────────────────────────── */}
+          {step === STEP.RESULT && result && (
+            <motion.div key="result" className="su-step su-step--result" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <motion.div
+                className="su-profile-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                <div className="su-profile-card__label">DEIN PROFIL</div>
+                <div className="su-profile-card__headline">{result.headline}</div>
+                <div className="su-profile-card__insight">{result.insight}</div>
+              </motion.div>
+
+              <div className="su-paths-label">DEINE 3 WEGE</div>
+
+              {result.paths?.map((path, i) => (
+                <motion.div
+                  key={i}
+                  className="su-path-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 + i * 0.1 }}
+                  whileHover={{ y: -3 }}
+                >
+                  <div className="su-path-card__header">
+                    <div>
+                      <div className="su-path-card__number">WEG {i + 1}</div>
+                      <div className="su-path-card__title">{path.title}</div>
+                    </div>
+                    <div className="su-match-badge">{path.match}% Match</div>
+                  </div>
+                  <div className="su-path-card__why">{path.why}</div>
+                  <div className="su-path-grid">
+                    <div className="su-path-detail">
+                      <div className="su-path-detail__label">ERSTER SCHRITT</div>
+                      <div className="su-path-detail__value su-path-detail__value--green">{path.first_step}</div>
+                    </div>
+                    <div className="su-path-detail">
+                      <div className="su-path-detail__label">ZEITRAUM</div>
+                      <div className="su-path-detail__value">{path.time}</div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+
+              <motion.button
+                onClick={reset}
+                style={S.btnSecondary}
+                whileHover={{ borderColor: "#8A7D65" }}
+              >
+                NOCHMAL STARTEN
+              </motion.button>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
       </main>
 
-      <footer style={{
-        padding: "16px 40px",
-        borderTop: "1px solid #D4C9B0",
-        display: "flex",
-        justifyContent: "space-between",
-        fontSize: "11px",
-        color: "#8A7D65",
-        letterSpacing: "1px",
-      }}>
+      {/* Footer */}
+      <footer className={`su-footer ${step === STEP.HERO ? "su-footer--hero" : ""}`}>
         <span>skillingup.de</span>
-        <span>POWERED BY PSYCHOLOGY + AI</span>
+        <span className="su-footer__right">
+          <Mail size={11} strokeWidth={1.5} style={{ marginRight: "5px", verticalAlign: "middle" }} />
+          POWERED BY PSYCHOLOGY + AI
+        </span>
       </footer>
     </div>
   );
