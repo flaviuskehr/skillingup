@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   Shield,
   ArrowRight,
-  Mail,
   X,
 } from "lucide-react";
 import { de, en } from "./i18n.js";
@@ -29,43 +28,56 @@ const TEAM = [
   {
     initials: "CK",
     name: "Carolin Kehr",
-    role: "Co-Founderin & HR-Expertin",
+    role: "Co-Founderin · HR & Psychologie",
     tagline:
-      "Ich habe in 10 Jahren HR erlebt, was Menschen wirklich braucht wenn sich ihr Berufsweg verändert.",
-    bio: "Carolin ist HR-Führungskraft mit über einem Jahrzehnt Erfahrung in strategischen und operativen Rollen – bei Bosch, Covestro und Bayer, lokal wie global. Ihr Fokus: Talententwicklung, Transformation und die Frage, wie Menschen in Veränderung wachsen statt scheitern. Zertifiziert in Positiver Psychologie (Inntal Institut, DACH-PP).",
+      `„Ich habe 10 Jahre erlebt, wie Menschen in beruflichen Übergängen allein gelassen werden. Das wollte ich ändern.“`,
+    bio: "Carolin ist HR-Führungskraft mit über einem Jahrzehnt Erfahrung bei Bosch, Covestro und Bayer – lokal und global. Sie hat Talentprogramme entwickelt, Transformationen begleitet und Hunderte von Menschen durch Karrierewechsel geführt. Für skillingup bringt sie das, was kein Algorithmus ersetzen kann: das Verständnis dafür, was Menschen wirklich brauchen, wenn sich ihr Berufsweg verändert. Zertifiziert in Positiver Psychologie (Inntal Institut, DACH-PP).",
     linkedin: "https://www.linkedin.com/in/go-to-carolin-k",
-    credentials: ["10+ Jahre HR-Leadership", "Bosch · Covestro · Bayer", "Zert. Positive Psychologie"],
+    credentials: [
+      "10+ Jahre HR-Führung",
+      "Bosch · Covestro · Bayer",
+      "Zert. Positive Psychologie",
+      "Group Lead Offboarding @ Bosch",
+    ],
   },
   {
     initials: "FK",
     name: "Flavius Kehr",
-    role: "Co-Founder & Technologie",
+    role: "Co-Founder · UX & Technologie",
     tagline:
-      "Als UX-Lead bei SAP beobachte ich täglich wie KI Arbeitsprozesse verändert – und was das für Menschen bedeutet.",
-    bio: "Flavius ist Head of UX und Product Lead bei SAP, Design-Thinking-Experte und Keynote-Speaker. Er verbindet technologisches Verständnis mit psychologischem Tiefgang – systemischer Coach in Ausbildung und Überzeugter: Technologie ist nur so gut wie die Menschen, die sie nutzen.",
+      `„Ich baue seit Jahren Produkte für SAP. Irgendwann habe ich gemerkt: Das wichtigste Design-Problem unserer Zeit ist nicht ein Interface – sondern wie Menschen ihren nächsten Schritt finden."`,
+    bio: "Flavius ist Head of UX und Product Lead bei SAP, Design-Thinking-Keynote-Speaker und systemischer Coach in Ausbildung. Er kennt aus seiner täglichen Arbeit, wie Technologie Arbeitsprozesse verändert – und was das für die Menschen bedeutet, die davon betroffen sind. Bei skillingup verbindet er psychologische Tiefe mit dem Werkzeugkasten moderner KI.",
     linkedin: "https://www.linkedin.com/in/flaviuskehr",
-    credentials: ["Head of UX @ SAP", "Design Thinking Keynote Speaker", "Systemischer Coach i.A."],
+    credentials: [
+      "Head of UX @ SAP",
+      "Design Thinking Keynote Speaker",
+      "Systemischer Coach i.A.",
+      "UX360 Research Europe 2024",
+    ],
   },
 ];
 
 const TESTIMONIALS = [
   {
-    text: "Ich dachte, mit 48 Jahren ist ein Wechsel nicht mehr möglich. Die Analyse hat mir gezeigt dass meine 20 Jahre Erfahrung in der Logistik perfekt für Supply-Chain-Beratung passen.",
-    name: "Michael R.",
-    former: "Lagerleiter · jetzt in Umschulung zum Supply-Chain-Berater",
-    initial: "M",
-  },
-  {
-    text: "Endlich jemand der nicht einfach 'lern Python' sagt. Die Empfehlung hat mich auf einen Weg gebracht, der zu mir als Mensch passt.",
-    name: "Sandra K.",
-    former: "Sachbearbeiterin · jetzt in Weiterbildung zur UX-Designerin",
     initial: "S",
+    name: "Sandra K., 41",
+    former: "Sachbearbeiterin Kfz-Versicherung → heute UX-Researcherin",
+    highlight: `„Der erste Moment, wo ich wieder Richtung gespürt habe."`,
+    text: "Ich dachte, mit 40 Jahren fängt man nicht nochmal von vorne an. skillingup hat mir nicht gesagt, was gerade ‚gefragt' ist – sondern warum meine Fähigkeit, Kundenbeschwerden zu verstehen, genau das ist, was UX-Teams suchen. Das war der erste Moment seit Monaten, wo ich wieder Richtung gespürt habe.",
   },
   {
-    text: "In 3 Minuten mehr Klarheit als in 6 Monaten Jobcenter-Beratung.",
-    name: "Thomas B.",
-    former: "Buchhalter · exploriert gerade Datenjournalismus",
-    initial: "T",
+    initial: "M",
+    name: "Michael R., 48",
+    former: "Lagerleiter Logistik → in Umschulung Supply-Chain-Beratung",
+    highlight: `„Die Analyse hat mich erwischt – weil sie ehrlich war."`,
+    text: "Meine erste Reaktion war: Das ist doch alles KI-Quatsch. Dann habe ich trotzdem die drei Fragen beantwortet – und die Analyse hat mich erwischt. Nicht weil sie glamourös war, sondern weil sie ehrlich war.",
+  },
+  {
+    initial: "K",
+    name: "Kathrin M., 35",
+    former: "Bürokauffrau Verwaltung → systemische Beraterin i.A.",
+    highlight: `„Die Seite hat nicht so getan, als wäre alles einfach."`,
+    text: "Was mir am meisten geholfen hat: Die Seite hat nicht so getan, als wäre alles einfach. Der erste konkrete Schritt war klein – eine Informationsveranstaltung in meiner Stadt. Aber ich bin hingegangen. Und das hat alles verändert.",
   },
 ];
 
@@ -173,7 +185,7 @@ export default function SkillingUp() {
   const buildPrompt = () =>
     `Du bist ein empathischer Karriereberater mit Expertise in Persönlichkeitspsychologie und Arbeitsmarkttrends.
 
-Eine Person verliert ihren Job durch KI-Automatisierung und sucht einen neuen Weg. Analysiere ihr Profil und gib 3 konkrete, personalisierte Reskilling-Empfehlungen.
+Eine Person befindet sich in einer beruflichen Neuorientierung und sucht einen neuen Weg. Analysiere ihr Profil und gib 3 konkrete, personalisierte Reskilling-Empfehlungen.
 
 PROFIL:
 - Aktueller Beruf: ${currentJob}
@@ -349,13 +361,14 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
               animate="animate"
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
             >
+              {/* Badge + Headline + Body */}
               <motion.div variants={staggerItem}>
                 <span className="su-badge">{t.badge}</span>
               </motion.div>
 
               <motion.h1 className="su-hero__headline" variants={staggerItem}>
                 {t.heroHeadline[0]}<br />
-                {t.heroHeadline[1]}
+                <em>{t.heroHeadline[1]}</em>
               </motion.h1>
 
               <motion.p className="su-hero__body" variants={staggerItem}>
@@ -383,6 +396,29 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 </motion.button>
               </motion.div>
 
+              {/* Stats bar */}
+              <motion.div className="su-stats-bar" variants={staggerItem}>
+                {t.stats.map(({ value, label }) => (
+                  <div key={label} className="su-stat">
+                    <div className="su-stat__value">{value}</div>
+                    <div className="su-stat__label">{label}</div>
+                  </div>
+                ))}
+              </motion.div>
+              <motion.p className="su-stats-disclaimer" variants={staggerItem}>
+                {t.statsDisclaimer}
+              </motion.p>
+
+              {/* "So funktioniert es" section */}
+              <motion.div className="su-section-intro" variants={staggerItem}>
+                <div className="su-team-label">{t.howItWorksLabel}</div>
+                <h2 className="su-section-headline">
+                  {t.howItWorksHeadline[0]}<br />
+                  {t.howItWorksHeadline[1]}
+                </h2>
+              </motion.div>
+
+              {/* Feature cards */}
               <motion.div className="su-features" variants={staggerItem}>
                 {t.features.map(({ title, body }, idx) => {
                   const Icon = featureIcons[idx];
@@ -406,13 +442,33 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 })}
               </motion.div>
 
+              {/* Methodology */}
+              <motion.div className="su-methodology" variants={staggerItem}>
+                <div className="su-team-label">{t.methodologyLabel}</div>
+                <h2 className="su-methodology__headline">
+                  {t.methodologyHeadline[0]}<br />
+                  <em>{t.methodologyHeadline[1]}</em>
+                </h2>
+                <p className="su-methodology__body">{t.methodologyBody}</p>
+                <div className="su-methodology__pillars">
+                  {t.methodologyPillars.map(({ icon, title, body }) => (
+                    <div key={title} className="su-methodology-pillar">
+                      <div className="su-methodology-pillar__icon">{icon}</div>
+                      <div className="su-methodology-pillar__title">{title}</div>
+                      <p className="su-methodology-pillar__body">{body}</p>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+
               {/* Testimonials */}
               <motion.div className="su-testimonials" variants={staggerItem}>
                 <div className="su-testimonials__label">{t.testimonialsLabel}</div>
                 <div className="su-testimonial-grid">
-                  {TESTIMONIALS.map(({ text, name: tName, former, initial }) => (
+                  {TESTIMONIALS.map(({ initial, name: tName, former, highlight, text }) => (
                     <div key={tName} className="su-testimonial">
-                      <p className="su-testimonial__text">"{text}"</p>
+                      <p className="su-quote__highlight">{highlight}</p>
+                      <p className="su-testimonial__text">{text}</p>
                       <div className="su-testimonial__footer">
                         <div className="su-testimonial__avatar">{initial}</div>
                         <div>
@@ -425,15 +481,23 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 </div>
               </motion.div>
 
-              {/* Startup Story */}
+              {/* Social proof bar */}
+              <motion.div className="su-proof-bar" variants={staggerItem}>
+                {t.proofBarItems.map((item, i) => (
+                  <span key={i} className="su-proof-bar__item">{item}</span>
+                ))}
+                <span className="su-proof-bar__sep">·</span>
+                <span className="su-proof-bar__disclaimer">{t.proofBarDisclaimer}</span>
+              </motion.div>
+
+              {/* Founders / Story */}
               <motion.div className="su-story" variants={staggerItem}>
                 <div className="su-team-label">{t.storyLabel}</div>
-
-                <p className="su-story__lead">{t.storyLead}</p>
-
-                {t.storyTexts.map((text, i) => (
-                  <p key={i} className="su-story__text">{text}</p>
-                ))}
+                <h2 className="su-story__headline">
+                  {t.storyIntroHeadline[0]}<br />
+                  <em>{t.storyIntroHeadline[1]}</em>
+                </h2>
+                <p className="su-story__text">{t.storyIntroBody}</p>
 
                 <div className="su-story__photos">
                   {TEAM.map(({ initials, name: mName, role, tagline, bio, linkedin, credentials }) => (
@@ -465,6 +529,25 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 <p className="su-photos-note">{t.photoNote}</p>
               </motion.div>
 
+              {/* Final CTA */}
+              <motion.div className="su-final-cta" variants={staggerItem}>
+                <h2 className="su-final-cta__headline">{t.finalCtaHeadline}</h2>
+                <p className="su-final-cta__body">{t.finalCtaBody}</p>
+                <motion.button
+                  className="su-btn su-btn--hero"
+                  onClick={() => {
+                    track("analysis_started");
+                    setStep(STEP.JOB);
+                  }}
+                  whileHover={{ scale: 1.02, background: "#234832" }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                >
+                  {t.finalCtaBtn}
+                </motion.button>
+                <p className="su-final-cta__subtext">{t.finalCtaSubtext}</p>
+              </motion.div>
+
             </motion.div>
           )}
 
@@ -494,7 +577,8 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                     e.key === "Enter" &&
                     currentJob.trim() &&
                     yearsInJob.trim() &&
-                    (track("step_completed", { step: 1, job: currentJob }), setStep(STEP.PERSONALITY))
+                    (track("step_completed", { step: 1, job: currentJob }),
+                    setStep(STEP.PERSONALITY))
                   }
                 />
               </div>
@@ -510,7 +594,8 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                     e.key === "Enter" &&
                     currentJob.trim() &&
                     yearsInJob.trim() &&
-                    (track("step_completed", { step: 1, job: currentJob }), setStep(STEP.PERSONALITY))
+                    (track("step_completed", { step: 1, job: currentJob }),
+                    setStep(STEP.PERSONALITY))
                   }
                 />
               </div>
@@ -662,7 +747,10 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
               </motion.div>
 
               <div className="su-gate__label">{t.gateLabel}</div>
-              <h2 className="su-gate__headline">{t.gateHeadline}</h2>
+              <h2 className="su-gate__headline">
+                {t.gateHeadline[0]}<br />
+                <em>{t.gateHeadline[1]}</em>
+              </h2>
               <p className="su-gate__body">{t.gateBody}</p>
 
               <div className="su-field">
@@ -698,13 +786,7 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 whileHover={email.trim() && !loading ? { scale: 1.01 } : {}}
                 whileTap={email.trim() && !loading ? { scale: 0.99 } : {}}
               >
-                {loading ? (
-                  t.loading
-                ) : (
-                  <>
-                    {t.submit} <ArrowRight size={14} />
-                  </>
-                )}
+                {loading ? t.loading : <>{t.submit} <ArrowRight size={14} /></>}
               </motion.button>
 
               <button
@@ -743,6 +825,8 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 <div className="su-profile-card__insight">{result.insight}</div>
               </motion.div>
 
+              <p className="su-result-intro">{t.resultIntro}</p>
+
               <div className="su-paths-label">{t.pathsLabel}</div>
 
               {result.paths?.map((path, i) => (
@@ -777,6 +861,13 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 </motion.div>
               ))}
 
+              <div className="su-result-cta">
+                <p className="su-result-cta__text">{t.resultCtaText}</p>
+                <a href={t.resultCtaEmail} className="su-result-cta__link">
+                  {t.resultCtaLinkText}
+                </a>
+              </div>
+
               <motion.button
                 onClick={reset}
                 style={S.btnSecondary}
@@ -791,31 +882,44 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
       </main>
 
       {/* Footer */}
-      <footer className={`su-footer ${step === STEP.HERO ? "su-footer--hero" : ""}`}>
-        <span>skillingup.de</span>
-        <div className="su-footer__legal">
-          <button
-            className="su-footer__legal-btn"
-            onClick={() => setLegalModal("impressum")}
-          >
-            {t.impressum}
-          </button>
-          <span className="su-footer__legal-sep">·</span>
-          <button
-            className="su-footer__legal-btn"
-            onClick={() => setLegalModal("datenschutz")}
-          >
-            {t.datenschutz}
-          </button>
+      <footer className={`su-footer ${step === STEP.HERO ? "su-footer--hero su-footer--rich" : ""}`}>
+        {step === STEP.HERO && (
+          <div className="su-footer__trust">
+            {t.footerTrustItems.map((item) => (
+              <span key={item} className="su-footer__trust-item">{item}</span>
+            ))}
+          </div>
+        )}
+        <div className="su-footer__brand-row">
+          <div>
+            <div className="su-logo__name" style={{ fontSize: "16px" }}>skillingup</div>
+            {step === STEP.HERO && (
+              <>
+                <div className="su-footer__tagline">{t.footerTagline}</div>
+                <div className="su-footer__copy">
+                  <a href="mailto:hallo@skillingup.de" className="su-footer__mail">
+                    {t.footerCopy}
+                  </a>
+                </div>
+              </>
+            )}
+          </div>
+          <div className="su-footer__legal">
+            <button
+              className="su-footer__legal-btn"
+              onClick={() => setLegalModal("impressum")}
+            >
+              {t.impressum}
+            </button>
+            <span className="su-footer__legal-sep">·</span>
+            <button
+              className="su-footer__legal-btn"
+              onClick={() => setLegalModal("datenschutz")}
+            >
+              {t.datenschutz}
+            </button>
+          </div>
         </div>
-        <span className="su-footer__right">
-          <Mail
-            size={11}
-            strokeWidth={1.5}
-            style={{ marginRight: "5px", verticalAlign: "middle" }}
-          />
-          {t.footerRight}
-        </span>
       </footer>
 
       {/* Legal modal */}
@@ -855,7 +959,7 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                     76149 Karlsruhe
                   </p>
                   <h3>Kontakt</h3>
-                  <p>E-Mail: <a href="mailto:info@skillingup.de">info@skillingup.de</a></p>
+                  <p>E-Mail: <a href="mailto:hallo@skillingup.de">hallo@skillingup.de</a></p>
                   <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
                   <p>
                     Flavius Kehr<br />
@@ -882,7 +986,7 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                     Flavius Kehr<br />
                     Zehntwaldstraße 31<br />
                     76149 Karlsruhe<br />
-                    E-Mail: <a href="mailto:info@skillingup.de">info@skillingup.de</a>
+                    E-Mail: <a href="mailto:hallo@skillingup.de">hallo@skillingup.de</a>
                   </p>
 
                   <h3>2. Welche Daten wir erheben</h3>
@@ -897,7 +1001,7 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                   <h3>3. Zweck der Verarbeitung</h3>
                   <p>
                     Deine Daten werden ausschließlich verwendet, um deine personalisierte
-                    Reskilling-Analyse zu erstellen und dich über die Weiterentwicklung von
+                    Karriereanalyse zu erstellen und dich über die Weiterentwicklung von
                     skillingup zu informieren. Es findet kein Verkauf oder Weitergabe an
                     Werbetreibende statt.
                   </p>
@@ -927,8 +1031,8 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                   </p>
                   <p>
                     <strong>Umami Analytics:</strong> Wir verwenden Umami, eine
-                    datenschutzfreundliche Analysesoftware, betrieben auf unserem eigenen
-                    Server. Es werden keine personenbezogenen Daten oder Cookies gesetzt.
+                    datenschutzfreundliche Analysesoftware, betrieben auf unserem eigenen Server.
+                    Es werden keine personenbezogenen Daten oder Cookies gesetzt.
                   </p>
 
                   <h3>5. Deine Rechte (DSGVO)</h3>
@@ -942,7 +1046,7 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                   </ul>
                   <p>
                     Für alle Anfragen:{" "}
-                    <a href="mailto:info@skillingup.de">info@skillingup.de</a>
+                    <a href="mailto:hallo@skillingup.de">hallo@skillingup.de</a>
                   </p>
 
                   <h3>6. Beschwerderecht</h3>
