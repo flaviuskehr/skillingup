@@ -413,14 +413,14 @@ input:focus { border-color: #2D5A3D !important; box-shadow: 0 0 0 3px rgba(45, 9
 }
 .su-path-detail__value--green { color: #2D5A3D; font-weight: 500; }
 
-/* ─── Team section ──────────────────────────────────────────── */
-.su-team-section {
+/* ─── Startup story section ─────────────────────────────────── */
+.su-story {
   max-width: 680px;
   width: 100%;
   margin-top: 48px;
-  padding-top: 40px;
+  padding-top: 48px;
   border-top: 1px solid #D4C9B0;
-  text-align: center;
+  text-align: left;
 }
 .su-team-label {
   font-size: 10px;
@@ -428,55 +428,96 @@ input:focus { border-color: #2D5A3D !important; box-shadow: 0 0 0 3px rgba(45, 9
   color: #8A7D65;
   font-family: 'Inter', system-ui, sans-serif;
   font-weight: 500;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
-.su-team-grid {
+.su-story__lead {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1A1A1A;
+  line-height: 1.4;
+  letter-spacing: -0.3px;
+  margin-bottom: 20px;
+}
+.su-story__text {
+  font-size: 15px;
+  color: #5A5040;
+  line-height: 1.85;
+  font-family: 'Inter', system-ui, sans-serif;
+  margin-bottom: 14px;
+  max-width: 580px;
+}
+
+/* Photo row */
+.su-story__photos {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  max-width: 420px;
-  margin: 0 auto;
+  gap: 24px;
+  margin-top: 40px;
+  max-width: 440px;
 }
-.su-team-card {
-  background: #FBF8F3;
-  border: 1px solid #E8E0D0;
+.su-story__person {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+/* Photo placeholder */
+.su-photo-placeholder {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(145deg, #EDE8DF 0%, #E0D9CC 100%);
   border-radius: 8px;
-  padding: 24px 16px 20px;
+  border: 1.5px dashed #C8BFAD;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  transition: box-shadow 0.2s;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  position: relative;
 }
-.su-team-card:hover { box-shadow: 0 4px 20px rgba(45, 90, 61, 0.08); }
+.su-photo-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 12px,
+    rgba(200, 191, 173, 0.15) 12px,
+    rgba(200, 191, 173, 0.15) 13px
+  );
+}
+.su-photo-placeholder__icon {
+  width: 40px;
+  height: 40px;
+  color: #B0A490;
+  position: relative;
+}
+.su-photo-placeholder__label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #B0A490;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  position: relative;
+}
 
-.su-avatar {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: #2D5A3D;
-  color: #F5F0E8;
+.su-story__name {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 16px;
   font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 6px;
-  letter-spacing: 0.5px;
-}
-.su-team-card__name {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 15px;
-  font-weight: 700;
   color: #1A1A1A;
 }
-.su-team-card__role {
+.su-story__role {
   font-size: 11px;
   color: #8A7D65;
   font-family: 'Inter', system-ui, sans-serif;
   letter-spacing: 0.5px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .su-linkedin-btn {
   display: inline-flex;
@@ -492,7 +533,6 @@ input:focus { border-color: #2D5A3D !important; box-shadow: 0 0 0 3px rgba(45, 9
   border: 1px solid #D4C9B0;
   border-radius: 20px;
   transition: all 0.15s;
-  margin-top: 2px;
 }
 .su-linkedin-btn:hover {
   background: #2D5A3D;
@@ -636,10 +676,11 @@ input:focus { border-color: #2D5A3D !important; box-shadow: 0 0 0 3px rgba(45, 9
   .su-trust { gap: 12px; }
   .su-btn--hero { min-width: unset; width: 100%; max-width: 340px; }
 
-  .su-team-grid { grid-template-columns: 1fr 1fr; gap: 12px; max-width: 100%; }
-  .su-avatar { width: 44px; height: 44px; font-size: 14px; }
-  .su-team-card { padding: 18px 12px 16px; }
-  .su-team-card__name { font-size: 13px; }
+  .su-story { padding-top: 36px; margin-top: 36px; }
+  .su-story__lead { font-size: 18px; }
+  .su-story__text { font-size: 14px; }
+  .su-story__photos { grid-template-columns: 1fr 1fr; gap: 16px; max-width: 100%; }
+  .su-story__name { font-size: 14px; }
 
   .su-modal { padding: 32px 20px 28px; max-height: 90vh; }
   .su-legal h2 { font-size: 22px; }

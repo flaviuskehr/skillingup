@@ -377,15 +377,43 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 ))}
               </motion.div>
 
-              {/* Team */}
-              <motion.div className="su-team-section" variants={staggerItem}>
-                <div className="su-team-label">GEGRÜNDET VON</div>
-                <div className="su-team-grid">
-                  {TEAM.map(({ initials, name, role, linkedin }) => (
-                    <div key={name} className="su-team-card">
-                      <div className="su-avatar">{initials}</div>
-                      <div className="su-team-card__name">{name}</div>
-                      <div className="su-team-card__role">{role}</div>
+              {/* Startup Story */}
+              <motion.div className="su-story" variants={staggerItem}>
+                <div className="su-team-label">UNSERE GESCHICHTE</div>
+
+                <p className="su-story__lead">
+                  Wir sind Caro &amp; Flavius — Diplom-Psychologen und Gründer von skillingup.
+                </p>
+
+                <p className="su-story__text">
+                  In unserer Arbeit haben wir Menschen in beruflichen Übergangsphasen begleitet.
+                  Immer wieder haben wir dasselbe erlebt: Menschen verlieren ihren Job — und werden
+                  mit generischen Kurs-Empfehlungen abgespeist, die nicht zu ihnen passen.
+                </p>
+
+                <p className="su-story__text">
+                  Dabei ist die Frage, welcher Weg wirklich passt, zutiefst persönlich. Sie hängt
+                  davon ab, wie du denkst, was dir wichtig ist und was dich antreibt. Das ist
+                  Psychologie — kein Algorithmus.
+                </p>
+
+                <p className="su-story__text">
+                  skillingup ist unsere Antwort. Eine Analyse, die mit dir beginnt —
+                  nicht mit dem Arbeitsmarkt.
+                </p>
+
+                <div className="su-story__photos">
+                  {TEAM.map(({ name, role, linkedin }) => (
+                    <div key={name} className="su-story__person">
+                      <div className="su-photo-placeholder">
+                        <svg className="su-photo-placeholder__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="8" r="4" />
+                          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                        </svg>
+                        <span className="su-photo-placeholder__label">Foto folgt</span>
+                      </div>
+                      <div className="su-story__name">{name}</div>
+                      <div className="su-story__role">{role}</div>
                       <a
                         href={linkedin}
                         target="_blank"
