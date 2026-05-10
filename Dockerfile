@@ -6,16 +6,14 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-
-# Injected as a build arg in Coolify (Settings → Build Variables)
-ARG VITE_ANTHROPIC_API_KEY
-ENV VITE_ANTHROPIC_API_KEY=$VITE_ANTHROPIC_API_KEY
-
 RUN npm run build
 
 # ── Serve ──────────────────────────────────────────────────────
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY env.js.template /etc/env.js.template
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
