@@ -52,9 +52,10 @@ test.describe("SkillingUp — User Flows", () => {
   });
 
   test("hero: feature cards visible", async ({ page }) => {
-    await expect(page.getByText("Persönlichkeit")).toBeVisible();
-    await expect(page.getByText("Werte")).toBeVisible();
-    await expect(page.getByText("3 konkrete Wege")).toBeVisible();
+    const cards = page.locator(".su-feature-card__title");
+    await expect(cards.filter({ hasText: "Persönlichkeit" })).toBeVisible();
+    await expect(cards.filter({ hasText: "Werte" })).toBeVisible();
+    await expect(cards.filter({ hasText: "3 konkrete Wege" })).toBeVisible();
   });
 
   test("hero CTA → job step", async ({ page }) => {
