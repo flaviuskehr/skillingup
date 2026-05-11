@@ -276,6 +276,7 @@ body {
   color: var(--color-ink-secondary);
   max-width: 520px;
   margin-bottom: 28px;
+  text-align: left;
 }
 
 /* Trust chips */
