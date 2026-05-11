@@ -1,17 +1,18 @@
 export const de = {
-  badge: "FÜR MENSCHEN IM BERUFLICHEN ÜBERGANG",
+  badge: "KOSTENLOSE KARRIEREANALYSE",
   heroHeadline: ["Du bist mehr als", "dein letzter Job."], // line 2 wrapped in <em> in JSX
   heroBody:
-    "skillingup analysiert deine Persönlichkeit, deine Werte und deine Stärken — und zeigt dir drei konkrete Wege, die wirklich zu dir passen. Keine Kursliste. Kein Algorithmus. Echter psychologischer Ansatz.",
+    "skillingup zeigt dir 3 konkrete Wege, die wirklich zu dir passen — auf Basis deiner Persönlichkeit, nicht auf Basis von Jobmarkt-Trends. Kein Kurs, den du kaufen musst.",
   trust: ["✓ Kostenlos & anonym", "✓ 3 Minuten", "✓ Kein Account nötig"],
   cta: "MEINE ANALYSE STARTEN",
+  ctaSubtext: "3 Minuten · kostenlos · anonym",
   stats: [
     { value: "3 Min.", label: "bis zur Analyse" },
     { value: "3", label: "persönliche Wege" },
     { value: "72 %*", label: "fanden neue Richtung" },
-    { value: "∅ 4.8 ★", label: "Nutzerbewertung" },
+    { value: "4.8 ★", label: "Nutzerbewertung" },
   ],
-  statsDisclaimer: "*eigene Beta-Erhebung, n=48, Stand April 2026",
+  statsDisclaimer: "*Pilot-Phase April 2026, n=48",
   howItWorksLabel: "SO FUNKTIONIERT ES",
   howItWorksHeadline: ["Drei Schritte.", "Eine ehrliche Antwort."],
   features: [
@@ -178,19 +179,20 @@ export const de = {
 };
 
 export const en = {
-  badge: "FOR PEOPLE IN CAREER TRANSITION",
+  badge: "FREE CAREER ANALYSIS",
   heroHeadline: ["You are more than", "your last job."],
   heroBody:
-    "skillingup analyses your personality, values and strengths — and shows you three concrete paths that truly fit you. No course list. No algorithm. A genuine psychological approach.",
+    "skillingup shows you 3 concrete paths that truly fit you — based on your personality, not on job-market trends. No course you have to buy.",
   trust: ["✓ Free & anonymous", "✓ 3 minutes", "✓ No account needed"],
   cta: "START MY ANALYSIS",
+  ctaSubtext: "3 minutes · free · anonymous",
   stats: [
     { value: "3 min.", label: "to your analysis" },
     { value: "3", label: "personal paths" },
     { value: "72 %*", label: "found new direction" },
-    { value: "∅ 4.8 ★", label: "user rating" },
+    { value: "4.8 ★", label: "user rating" },
   ],
-  statsDisclaimer: "*own beta survey, n=48, April 2026",
+  statsDisclaimer: "*Pilot Phase April 2026, n=48",
   howItWorksLabel: "HOW IT WORKS",
   howItWorksHeadline: ["Three steps.", "One honest answer."],
   features: [

@@ -381,7 +381,7 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 ))}
               </motion.div>
 
-              <motion.div variants={staggerItem}>
+              <motion.div variants={staggerItem} className="su-cta-group">
                 <motion.button
                   className="su-btn su-btn--hero"
                   onClick={() => {
@@ -394,6 +394,7 @@ Antworte NUR mit einem JSON-Objekt (kein Markdown, keine Backticks), exakt in di
                 >
                   {t.cta} <ArrowRight size={16} />
                 </motion.button>
+                <p className="su-cta-subtext">{t.ctaSubtext}</p>
               </motion.div>
 
               {/* Stats bar */}
